@@ -12,7 +12,8 @@ def print_data(sensor):
     print("GYRO: " + str(sensor.read_gyro_raw()))
 
 while True:
-    
-    print_data(imu)
-    time.sleep(0.2)
     os.system("clear")
+    print_data(imu)
+    time.sleep(0.1)
+
+
