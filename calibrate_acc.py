@@ -55,8 +55,8 @@ def calibration_accelerometre(beta=9.81, nb_mesures=4):
     print("Matrice de calibration (A):\n", A)
     
     # Sauvegarde des résultats
-    np.save('A2', A)
-    np.save('b2', b)
+    np.save('A100', A)
+    np.save('b100', b)
     
     return A, b
 
