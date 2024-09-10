@@ -36,7 +36,7 @@ def get_acc_mean(imu=imu, duree=0.5):
 
 
 def declenchement(imu=imu, ard=ard):
-    acc_z = get_acc(imu)[2]
+    acc_z = get_acc_mean(imu)[2]
     #print(acc_z)
     while acc_z > 2800:
         ard.send_arduino_cmd_motor(0, 0)
