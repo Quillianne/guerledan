@@ -46,9 +46,9 @@ def get_gps(gps=gps):
         return latitude, longitude
 
 def suivi_gps(point_gps, log=True, Kp = 2):
-    obj = np.array(conversion_spherique_carthesien(point_gps))
+    obj = np.array(conversion_spherique_cartesien(point_gps))
     coord_boat = (get_gps())
-    boat = np.array(conversion_spherique_carthesien(coord_boat))
+    boat = np.array(conversion_spherique_cartesien(coord_boat))
 
     vecteur = obj-boat
     cap = get_cap()*180/np.pi
@@ -88,7 +88,7 @@ def suivi_gps(point_gps, log=True, Kp = 2):
 
 
         coord_boat = (get_gps())
-        boat = np.array(conversion_spherique_carthesien(coord_boat))
+        boat = np.array(conversion_spherique_cartesien(coord_boat))
         vecteur = obj-boat
         cap = get_cap()*180/np.pi
         cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
