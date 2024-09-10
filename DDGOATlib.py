@@ -52,7 +52,7 @@ def suivi_gps(point_gps, log=True, Kp = 2):
 
     while distance > 5:
 
-        coord_boat = (get_gps())
+        coord_boat = get_gps()
         boat = np.array(conversion_spherique_cartesien(coord_boat))
 
         vecteur = obj-boat
@@ -209,9 +209,6 @@ def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=3.0144444, rh
     """
     lat = point[0]
     long = point[1]
-    lx = rho*np.cos(lat)*np.cos(long)
-    ly = rho*np.cos(lat)*np.sin(long)
-    rho = rho*np.sin(lat)
 
     x = rho*np.cos(ly)*(lx-long_m)
     y = rho*(ly-lat_m)
