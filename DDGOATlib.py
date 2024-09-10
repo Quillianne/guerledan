@@ -195,6 +195,10 @@ def suivi_cap(cap_consigne, duree=60, Kp=2, spd_base=200):
     ard.send_arduino_cmd_motor(0, 0)
     print("Moteurs arrêtés.")
 
+def deg_to_rad(deg):
+    """Convertit les degrés en radians."""
+    return deg * np.pi / 180
+
 def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=3.0144444, rho=6371000):
     """
     Convertit les coordonnées GPS(latitude, longitude) en coordonnées cartésiennes locales (sur le lac t'as capté?)
