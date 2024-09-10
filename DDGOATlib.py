@@ -87,7 +87,7 @@ def suivi_gps(point_gps, log=True, Kp = 2):
 
 
 
-
+        coord_boat = (get_gps())
         boat = np.array(conversion_spherique_carthesien(coord_boat))
         vecteur = obj-boat
         cap = get_cap()*180/np.pi
