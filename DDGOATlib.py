@@ -10,13 +10,87 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'drivers-ddboat-v2'))
 
 import imu9_driver_v2 as imudrv
 import arduino_driver_v2 as arddrv
+import gps_driver_v2 as gpsdrv
+
+
 
 # Initialisation des capteurs et moteurs
 imu = imudrv.Imu9IO()
 ard = arddrv.ArduinoIO()
+gps = gpsdrv.GpsIO()
+gps.set_filter_speed("0")
 
 A = np.load("A.npy")
 b = np.load("b.npy")
+
+def get_gps(gps=gps):
+    gll_ok, gll_data = gps.read_gll_non_blocking()
+    if gll_ok:
+        return gll_data
+
+def suivi_gps(point_gps, log=True, Kp = 2):
+    obj = np.array(conversion_spherique_carthesien(point_gps))
+    coord_boat = (get_gps()[0],get_gps()[2])
+    boat = np.array(conversion_spherique_carthesien(coord_boat))
+
+    vecteur = obj-boat
+    cap = get_cap()*180/np.pi
+    cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+    distance = np.linalg.norm(vecteur)
+    # Calcul de l'erreur de cap
+    erreur = cap_a_suivre - cap
+
+    # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
+    if erreur > 180:
+        erreur -= 360
+    elif erreur < -180:
+        erreur += 360
+
+
+
+    while distance > 5:
+        print("cap actuel: {:.2f}° | erreur: {:.2f}° | distance: {:.2f}m".format(cap,erreur,distance))
+        
+
+        # Correction proportionnelle
+        correction = Kp * erreur
+        spd_base = 50+distance
+
+
+        # Calcul des vitesses des moteurs (base + correction)
+        spdleft = spd_base + correction
+        spdright = spd_base - correction
+
+        # Limitation des vitesses entre 0 et 255
+        spdleft = max(-255, min(255, spdleft))
+        spdright = max(-255, min(255, spdright))
+
+        # Envoi des commandes aux moteurs
+        ard.send_arduino_cmd_motor(spdleft, spdright)
+
+
+
+
+        boat = np.array(conversion_spherique_carthesien(coord_boat))
+        vecteur = obj-boat
+        cap = get_cap()*180/np.pi
+        cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+        distance = np.linalg.norm(vecteur)
+
+        # Calcul de l'erreur de cap
+        erreur = cap_a_suivre - cap
+        # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
+        if erreur > 180:
+            erreur -= 360
+        elif erreur < -180:
+            erreur += 360
+        
+
+
+
+
+
+
 
 def get_acc_mean(imu=imu, duree=0.5):
     """
