@@ -38,8 +38,8 @@ def convert_to_decimal_degrees(ddmmss, direction):
     return decimal_degrees
 
 def get_gps(gps=gps):
-    i=0
-    for _ in range(5):
+    count=0
+    for i in range(5):
 
         gll_ok, gll_data = gps.read_gll_non_blocking()
         if gll_ok:
@@ -47,9 +47,11 @@ def get_gps(gps=gps):
             print(gll_data)
             latitude += convert_to_decimal_degrees(gll_data[0], gll_data[1])
             longitude += convert_to_decimal_degrees(gll_data[2], gll_data[3])
-            i+=1
+            count+=1
 
-    return latitude/i, longitude/i
+    latitude = latitude/count
+    longitude = longitude/count
+    return latitude, longitude
 
 def suivi_gps(point_gps, log=True, Kp = 2):
     obj = np.array(conversion_spherique_cartesien(point_gps))
