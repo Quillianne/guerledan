@@ -39,6 +39,8 @@ def convert_to_decimal_degrees(ddmmss, direction):
 
 def get_gps(gps=gps):
     count=0
+    latitude = 0
+    longitude = 0
     for i in range(5):
 
         gll_ok, gll_data = gps.read_gll_non_blocking()
