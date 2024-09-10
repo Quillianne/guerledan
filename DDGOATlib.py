@@ -96,8 +96,9 @@ def suivi_gps(point_gps, log=True, Kp = 2):
             ard.send_arduino_cmd_motor(spdleft, spdright)
 
         time.sleep(0.1)
-    ard.send_arduino_cmd_motor(0, 0)
+    
     np.save("gps_data.npy",GPS_DATA)
+    ard.send_arduino_cmd_motor(0, 0)
 
         
 
