@@ -46,26 +46,31 @@ def get_gps(gps=gps):
         return latitude, longitude
 
 def suivi_gps(point_gps, log=True, Kp = 2):
-    obj = np.array(conversion_spherique_carthesien(point_gps))
-    coord_boat = (get_gps())
-    boat = np.array(conversion_spherique_carthesien(coord_boat))
+    obj = np.array(conversion_spherique_cartesien(point_gps))
+    distance = 100
 
-    vecteur = obj-boat
-    cap = get_cap()*180/np.pi
-    cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-    distance = np.linalg.norm(vecteur)
-    # Calcul de l'erreur de cap
-    erreur = cap_a_suivre - cap
 
-    # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
-    if erreur > 180:
-        erreur -= 360
-    elif erreur < -180:
-        erreur += 360
 
 
 
     while distance > 5:
+
+        coord_boat = (get_gps())
+        boat = np.array(conversion_spherique_cartesien(coord_boat))
+
+        vecteur = obj-boat
+        cap = get_cap()*180/np.pi
+        cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+        distance = np.linalg.norm(vecteur)
+        # Calcul de l'erreur de cap
+        erreur = cap_a_suivre - cap
+
+        # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
+        if erreur > 180:
+            erreur -= 360
+        elif erreur < -180:
+            erreur += 360
+
         print("cap actuel: {:.2f}° | erreur: {:.2f}° | distance: {:.2f}m".format(cap,erreur,distance))
         
 
@@ -84,23 +89,6 @@ def suivi_gps(point_gps, log=True, Kp = 2):
 
         # Envoi des commandes aux moteurs
         ard.send_arduino_cmd_motor(spdleft, spdright)
-
-
-
-        coord_boat = (get_gps())
-        boat = np.array(conversion_spherique_carthesien(coord_boat))
-        vecteur = obj-boat
-        cap = get_cap()*180/np.pi
-        cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-        distance = np.linalg.norm(vecteur)
-
-        # Calcul de l'erreur de cap
-        erreur = cap_a_suivre - cap
-        # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
-        if erreur > 180:
-            erreur -= 360
-        elif erreur < -180:
-            erreur += 360
         
 
 
