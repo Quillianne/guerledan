@@ -31,9 +31,9 @@ def convert_to_decimal_degrees(ddmmss, direction):
     # Conversion des minutes en degrés
     decimal_degrees = degrees + minutes / 60
 
-    # Si la direction est Sud ou Ouest, on rend la valeur négative
-    if direction in ['S', 'W']:
-        decimal_degrees = -decimal_degrees
+    # # Si la direction est Sud ou Ouest, on rend la valeur négative
+    # if direction in ['S', 'W']:
+    #     decimal_degrees = -decimal_degrees
 
     return decimal_degrees
 
