@@ -62,9 +62,9 @@ def suivi_gps(point_gps, log=True, Kp = 2):
         if coord_boat != None:
             boat = np.array(conversion_spherique_cartesien(coord_boat))
 
-            vecteur = obj-boat
+            vecteur = boat-obj
             cap = get_cap()*180/np.pi
-            cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+            cap_a_suivre = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
             distance = np.linalg.norm(vecteur)
             # Calcul de l'erreur de cap
             erreur = cap_a_suivre - cap
