@@ -23,14 +23,31 @@ gps.set_filter_speed("0")
 A = np.load("A.npy")
 b = np.load("b.npy")
 
+def convert_to_decimal_degrees(ddmmss, direction):
+    # Séparation de la partie degrés et minutes
+    degrees = int(ddmmss[:2])  # Prend les 2 premiers caractères comme degrés
+    minutes = float(ddmmss[2:])  # Le reste est pris comme minutes
+
+    # Conversion des minutes en degrés
+    decimal_degrees = degrees + minutes / 60
+
+    # Si la direction est Sud ou Ouest, on rend la valeur négative
+    if direction in ['S', 'W']:
+        decimal_degrees = -decimal_degrees
+
+    return decimal_degrees
+
 def get_gps(gps=gps):
     gll_ok, gll_data = gps.read_gll_non_blocking()
     if gll_ok:
-        return gll_data
+        # Conversion des données GPS en degrés décimaux
+        latitude = convert_to_decimal_degrees(gll_data[0], gll_data[1])
+        longitude = convert_to_decimal_degrees(gll_data[2], gll_data[3])
+        return latitude, longitude
 
 def suivi_gps(point_gps, log=True, Kp = 2):
     obj = np.array(conversion_spherique_carthesien(point_gps))
-    coord_boat = (get_gps()[0],get_gps()[2])
+    coord_boat = (get_gps())
     boat = np.array(conversion_spherique_carthesien(coord_boat))
 
     vecteur = obj-boat
