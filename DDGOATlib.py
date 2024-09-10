@@ -130,6 +130,8 @@ def declenchement(imu=imu, ard=ard):
         acc_z = get_acc_mean(imu)[2]
         #print(acc_z)
 
+    ard.send_arduino_cmd_motor(0, 0)
+
 def get_cap(imu=imu):
     """
     Fonction qui lit les données magnétiques, les corrige avec la matrice de calibration A et le vecteur b,
