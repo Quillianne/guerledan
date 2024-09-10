@@ -110,7 +110,7 @@ def get_acc_mean(imu=imu, duree=0.5):
 
 
 def declenchement(imu=imu, ard=ard):
-    acc_z = get_acc(imu)[2]
+    acc_z = get_acc_mean(imu)[2]
     #print(acc_z)
     while acc_z > 2800:
         ard.send_arduino_cmd_motor(0, 0)
@@ -183,3 +183,18 @@ def suivi_cap(cap_consigne, duree=60, Kp=2, spd_base=200):
 
     ard.send_arduino_cmd_motor(0, 0)
     print("Moteurs arrêtés.")
+
+def conversion_spherique_cartesien(point, long_m=3.0144444, lat_m=48.1991667, rho=6371):
+    """
+    Convertit les coordonnées GPS(latitude, longitude) en coordonnées cartésiennes locales (sur le lac t'as capté?)
+    """
+    long = point[0]
+    lat = point[1]
+    lx = rho*np.cos(lat)*np.cos(long)
+    ly = rho*np.cos(lat)*np.sin(long)
+    rho = rho*np.sin(lat)
+
+    x = rho*np.cos(ly)*(lx-long_m)
+    y = rho*(ly-lat_m)
+
+    return x, y
