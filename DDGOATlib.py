@@ -195,17 +195,31 @@ def suivi_cap(cap_consigne, duree=60, Kp=2, spd_base=200):
     ard.send_arduino_cmd_motor(0, 0)
     print("Moteurs arrêtés.")
 
+def deg_to_rad(deg):
+    """Convertit les degrés en radians."""
+    return deg * np.pi / 180
+
 def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=3.0144444, rho=6371000):
     """
-    Convertit les coordonnées GPS(latitude, longitude) en coordonnées cartésiennes locales (sur le lac t'as capté?)
+    Convertit les coordonnées GPS (latitude, longitude) en coordonnées cartésiennes locales
+    par rapport à un point M défini par lat_m et long_m, en ne retournant que x et y.
     """
-    lat = point[0]
-    long = point[1]
-    lx = rho*np.cos(lat)*np.cos(long)
-    ly = rho*np.cos(lat)*np.sin(long)
-    rho = rho*np.sin(lat)
+    # Convertir les latitudes et longitudes en radians
+    lat_m_rad = deg_to_rad(lat_m)
+    long_m_rad = deg_to_rad(long_m)
+    lat_rad = deg_to_rad(point[0])
+    long_rad = deg_to_rad(point[1])
 
-    x = rho*np.cos(ly)*(lx-long_m)
-    y = rho*(ly-lat_m)
+    # Conversion des coordonnées du point M (centre) en cartésiennes 2D (x_m, y_m)
+    x_m = rho * np.cos(lat_m_rad) * np.cos(long_m_rad)
+    y_m = rho * np.cos(lat_m_rad) * np.sin(long_m_rad)
+
+    # Conversion des coordonnées du point P en cartésiennes 2D (x_p, y_p)
+    x_p = rho * np.cos(lat_rad) * np.cos(long_rad)
+    y_p = rho * np.cos(lat_rad) * np.sin(long_rad)
+
+    # Calcul des coordonnées relatives par rapport au point M
+    x = x_p - x_m
+    y = y_p - y_m
 
     return x, y
