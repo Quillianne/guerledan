@@ -24,9 +24,9 @@ A = np.load("A.npy")
 b = np.load("b.npy")
 
 def convert_to_decimal_degrees(ddmmss, direction):
-    # Séparation de la partie degrés et minutes
-    degrees = int(ddmmss[:2])  # Prend les 2 premiers caractères comme degrés
-    minutes = float(ddmmss[2:])  # Le reste est pris comme minutes
+    # Séparer les degrés et les minutes avec des opérations mathématiques
+    degrees = int(ddmmss // 100)  # Diviser par 100 pour obtenir les degrés
+    minutes = ddmmss % 100  # Le reste correspond aux minutes
 
     # Conversion des minutes en degrés
     decimal_degrees = degrees + minutes / 60
