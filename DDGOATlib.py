@@ -206,7 +206,7 @@ def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=3.0144444, rh
     lat = point[0]
     long = point[1]
 
-    x = rho*np.cos(ly)*(lx-long_m)
-    y = rho*(ly-lat_m)
+    x = rho*np.cos(lat)*(long-long_m)
+    y = rho*(lat-lat_m)
 
     return x, y
