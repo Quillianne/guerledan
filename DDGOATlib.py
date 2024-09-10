@@ -52,57 +52,45 @@ def suivi_gps(point_gps, log=True, Kp = 2):
 
     while distance > 5:
 
-        coord_boat = (get_gps())
-        boat = np.array(conversion_spherique_cartesien(coord_boat))
+        coord_boat = get_gps()
+        if get_gps != None:
+            boat = np.array(conversion_spherique_cartesien(coord_boat))
 
-        vecteur = obj-boat
-        cap = get_cap()*180/np.pi
-        cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-        distance = np.linalg.norm(vecteur)
-        # Calcul de l'erreur de cap
-        erreur = cap_a_suivre - cap
+            vecteur = obj-boat
+            cap = get_cap()*180/np.pi
+            cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+            distance = np.linalg.norm(vecteur)
+            # Calcul de l'erreur de cap
+            erreur = cap_a_suivre - cap
 
-        # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
-        if erreur > 180:
-            erreur -= 360
-        elif erreur < -180:
-            erreur += 360
+            # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
+            if erreur > 180:
+                erreur -= 360
+            elif erreur < -180:
+                erreur += 360
 
-        print("cap actuel: {:.2f}° | erreur: {:.2f}° | distance: {:.2f}m".format(cap,erreur,distance))
-        
+            print("cap actuel: {:.2f}° | erreur: {:.2f}° | distance: {:.2f}m".format(cap,erreur,distance))
+            
 
-        # Correction proportionnelle
-        correction = Kp * erreur
-        spd_base = 50+distance
-
-
-        # Calcul des vitesses des moteurs (base + correction)
-        spdleft = spd_base + correction
-        spdright = spd_base - correction
-
-        # Limitation des vitesses entre 0 et 255
-        spdleft = max(-255, min(255, spdleft))
-        spdright = max(-255, min(255, spdright))
-
-        # Envoi des commandes aux moteurs
-        ard.send_arduino_cmd_motor(spdleft, spdright)
+            # Correction proportionnelle
+            correction = Kp * erreur
+            spd_base = 50+distance
 
 
+            # Calcul des vitesses des moteurs (base + correction)
+            spdleft = spd_base + correction
+            spdright = spd_base - correction
 
-        coord_boat = (get_gps())
-        boat = np.array(conversion_spherique_cartesien(coord_boat))
-        vecteur = obj-boat
-        cap = get_cap()*180/np.pi
-        cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-        distance = np.linalg.norm(vecteur)
+            # Limitation des vitesses entre 0 et 255
+            spdleft = max(-255, min(255, spdleft))
+            spdright = max(-255, min(255, spdright))
 
-        # Calcul de l'erreur de cap
-        erreur = cap_a_suivre - cap
-        # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
-        if erreur > 180:
-            erreur -= 360
-        elif erreur < -180:
-            erreur += 360
+            # Envoi des commandes aux moteurs
+            ard.send_arduino_cmd_motor(spdleft, spdright)
+
+        time.sleep(0.1)
+
+
         
 
 

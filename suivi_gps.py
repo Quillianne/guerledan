@@ -1,4 +1,4 @@
-from .DDGOATlib import suivi_gps, declenchement
+from DDGOATlib import suivi_gps, declenchement
 
 
 declenchement()
