@@ -110,12 +110,12 @@ def suivi_cap(cap_consigne, duree=60, Kp=2, spd_base=200):
     ard.send_arduino_cmd_motor(0, 0)
     print("Moteurs arrêtés.")
 
-def conversion_spherique_cartesien(point, long_m=3.0144444, lat_m=48.1991667, rho=6371):
+def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=3.0144444, rho=6371000):
     """
     Convertit les coordonnées GPS(latitude, longitude) en coordonnées cartésiennes locales (sur le lac t'as capté?)
     """
-    long = point[0]
-    lat = point[1]
+    lat = point[0]
+    long = point[1]
     lx = rho*np.cos(lat)*np.cos(long)
     ly = rho*np.cos(lat)*np.sin(long)
     rho = rho*np.sin(lat)
