@@ -24,9 +24,9 @@ A = np.load("A.npy")
 b = np.load("b.npy")
 
 def convert_to_decimal_degrees(ddmmss, direction):
-    # Séparation de la partie degrés et minutes
-    degrees = int(ddmmss[:2])  # Prend les 2 premiers caractères comme degrés
-    minutes = float(ddmmss[2:])  # Le reste est pris comme minutes
+    # Séparer les degrés et les minutes avec des opérations mathématiques
+    degrees = int(ddmmss // 100)  # Diviser par 100 pour obtenir les degrés
+    minutes = ddmmss % 100  # Le reste correspond aux minutes
 
     # Conversion des minutes en degrés
     decimal_degrees = degrees + minutes / 60
@@ -41,6 +41,7 @@ def get_gps(gps=gps):
     gll_ok, gll_data = gps.read_gll_non_blocking()
     if gll_ok:
         # Conversion des données GPS en degrés décimaux
+        print(gll_data)
         latitude = convert_to_decimal_degrees(gll_data[0], gll_data[1])
         longitude = convert_to_decimal_degrees(gll_data[2], gll_data[3])
         return latitude, longitude
@@ -52,57 +53,45 @@ def suivi_gps(point_gps, log=True, Kp = 2):
 
     while distance > 5:
 
-        coord_boat = get_gps()
-        boat = np.array(conversion_spherique_cartesien(coord_boat))
-
-        vecteur = obj-boat
-        cap = get_cap()*180/np.pi
-        cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-        distance = np.linalg.norm(vecteur)
-        # Calcul de l'erreur de cap
-        erreur = cap_a_suivre - cap
-
-        # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
-        if erreur > 180:
-            erreur -= 360
-        elif erreur < -180:
-            erreur += 360
-
-        print("cap actuel: {:.2f}° | erreur: {:.2f}° | distance: {:.2f}m".format(cap,erreur,distance))
-        
-
-        # Correction proportionnelle
-        correction = Kp * erreur
-        spd_base = 50+distance
-
-
-        # Calcul des vitesses des moteurs (base + correction)
-        spdleft = spd_base + correction
-        spdright = spd_base - correction
-
-        # Limitation des vitesses entre 0 et 255
-        spdleft = max(-255, min(255, spdleft))
-        spdright = max(-255, min(255, spdright))
-
-        # Envoi des commandes aux moteurs
-        ard.send_arduino_cmd_motor(spdleft, spdright)
-
-
-
         coord_boat = (get_gps())
         boat = np.array(conversion_spherique_cartesien(coord_boat))
-        vecteur = obj-boat
-        cap = get_cap()*180/np.pi
-        cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-        distance = np.linalg.norm(vecteur)
 
-        # Calcul de l'erreur de cap
-        erreur = cap_a_suivre - cap
-        # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
-        if erreur > 180:
-            erreur -= 360
-        elif erreur < -180:
-            erreur += 360
+            vecteur = obj-boat
+            cap = get_cap()*180/np.pi
+            cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+            distance = np.linalg.norm(vecteur)
+            # Calcul de l'erreur de cap
+            erreur = cap_a_suivre - cap
+
+            # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
+            if erreur > 180:
+                erreur -= 360
+            elif erreur < -180:
+                erreur += 360
+
+            print("cap actuel: {:.2f}° | cap à suivre: {:.2f}° | erreur: {:.2f}° | distance: {:.2f}m".format(cap,cap_a_suivre,erreur,distance))
+            
+
+            # Correction proportionnelle
+            correction = Kp * erreur
+            #spd_base = 50+distance
+            spd_base = 100
+
+
+            # Calcul des vitesses des moteurs (base + correction)
+            spdleft = spd_base + correction
+            spdright = spd_base - correction
+
+            # Limitation des vitesses entre 0 et 255
+            spdleft = max(-255, min(255, spdleft))
+            spdright = max(-255, min(255, spdright))
+
+            # Envoi des commandes aux moteurs
+            ard.send_arduino_cmd_motor(spdleft, spdright)
+
+        time.sleep(0.1)
+
+
         
 
 
@@ -140,6 +129,8 @@ def declenchement(imu=imu, ard=ard):
         ard.send_arduino_cmd_motor(100, 100)
         acc_z = get_acc_mean(imu)[2]
         #print(acc_z)
+
+    ard.send_arduino_cmd_motor(0, 0)
 
 def get_cap(imu=imu):
     """

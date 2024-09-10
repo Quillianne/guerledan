@@ -4,7 +4,7 @@ import numpy as np
 import time
 import os
 from time import sleep
-from .DDGOATlib import declenchement, suivi_cap
+from DDGOATlib import declenchement, suivi_cap
 # Ajout du chemin vers le répertoire contenant les drivers
 sys.path.append(os.path.join(os.path.dirname(__file__), 'drivers-ddboat-v2'))
 
