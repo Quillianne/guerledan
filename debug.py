@@ -11,9 +11,9 @@ def convert_to_decimal_degrees(ddmmss, direction):
     # Conversion des minutes en degrés
     decimal_degrees = degrees + minutes / 60
 
-    # # Si la direction est Sud ou Ouest, on rend la valeur négative
-    # if direction in ['S', 'W']:
-    #     decimal_degrees = -decimal_degrees
+    # Si la direction est Sud ou Ouest, on rend la valeur négative
+    if direction in ['S', 'W']:
+        decimal_degrees = -decimal_degrees
 
     return decimal_degrees
 
@@ -33,7 +33,7 @@ def deg_to_rad(deg):
     """Convertit les degrés en radians."""
     return deg * np.pi / 180
 
-def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=3.0144444, rho=6371000):
+def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=-3.0144444, rho=6371000):
     """
     Convertit les coordonnées GPS (latitude, longitude) en coordonnées cartésiennes locales
     par rapport à un point M défini par lat_m et long_m, en ne retournant que x et y.
@@ -109,4 +109,7 @@ def suivi_gps(point_gps, log=True, Kp = 2):
 print(get_gps())
 print(conversion_spherique_cartesien((48.1991667, 3.0144444)))
 print(conversion_spherique_cartesien(get_gps()))
-suivi_gps((48.1991667,3.0144444))
+
+print(conversion_spherique_cartesien((48.2006265, -3.0166131)))
+
+suivi_gps((48.2006265, -3.0166131))

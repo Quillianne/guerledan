@@ -31,20 +31,25 @@ def convert_to_decimal_degrees(ddmmss, direction):
     # Conversion des minutes en degrés
     decimal_degrees = degrees + minutes / 60
 
-    # # Si la direction est Sud ou Ouest, on rend la valeur négative
-    # if direction in ['S', 'W']:
-    #     decimal_degrees = -decimal_degrees
+    # Si la direction est Sud ou Ouest, on rend la valeur négative
+    if direction in ['S', 'W']:
+        decimal_degrees = -decimal_degrees
 
     return decimal_degrees
 
 def get_gps(gps=gps):
-    gll_ok, gll_data = gps.read_gll_non_blocking()
-    if gll_ok:
-        # Conversion des données GPS en degrés décimaux
-        print(gll_data)
-        latitude = convert_to_decimal_degrees(gll_data[0], gll_data[1])
-        longitude = convert_to_decimal_degrees(gll_data[2], gll_data[3])
-        return latitude, longitude
+    i=0
+    for _ in range(5):
+
+        gll_ok, gll_data = gps.read_gll_non_blocking()
+        if gll_ok:
+            # Conversion des données GPS en degrés décimaux
+            print(gll_data)
+            latitude += convert_to_decimal_degrees(gll_data[0], gll_data[1])
+            longitude += convert_to_decimal_degrees(gll_data[2], gll_data[3])
+            i+=1
+
+    return latitude/i, longitude/i
 
 def suivi_gps(point_gps, log=True, Kp = 2):
     obj = np.array(conversion_spherique_cartesien(point_gps))
@@ -60,7 +65,7 @@ def suivi_gps(point_gps, log=True, Kp = 2):
             vecteur = obj-boat
             cap = get_cap()*180/np.pi
             cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-            distance = np.linalg.norm(vecteur)/100
+            distance = np.linalg.norm(vecteur)
             # Calcul de l'erreur de cap
             erreur = cap_a_suivre - cap
 
@@ -91,7 +96,6 @@ def suivi_gps(point_gps, log=True, Kp = 2):
             ard.send_arduino_cmd_motor(spdleft, spdright)
 
         time.sleep(0.1)
-    ard.send_arduino_cmd_motor(0,0)
 
 
         
@@ -200,7 +204,7 @@ def deg_to_rad(deg):
     """Convertit les degrés en radians."""
     return deg * np.pi / 180
 
-def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=3.0144444, rho=6371000):
+def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=-3.0144444, rho=6371000):
     """
     Convertit les coordonnées GPS(latitude, longitude) en coordonnées cartésiennes locales (sur le lac t'as capté?)
     """
