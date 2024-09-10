@@ -1,64 +1,90 @@
-# -*- coding: utf-8 -*-
-import sys
 import numpy as np
-import time
+import sys
 import os
-
+import time
 sys.path.append(os.path.join(os.path.dirname(__file__), 'drivers-ddboat-v2'))
 
 import imu9_driver_v2 as imudrv
+
+# http://ensta-bretagne.fr/jaulin/speech_calibration.pdf
+def degToRad(deg):
+    return deg * np.pi / 180
+
+
+
+beta = 46 * 10**(-6)
+inclination = 64
+
 imu = imudrv.Imu9IO()
 
-# Fonction pour capturer les données magnétiques
-def capturer_donnees_mag(imu, duree=5):
+def moyenne_mesures(imu, duree=5):
     """
-    Capture les données magnétiques brutes pendant une durée donnée.
-    Retourne la moyenne des lectures.
+    Fonction pour capturer les données magnétiques pendant une durée (en secondes) 
+    et renvoyer la moyenne des mesures sur cette période.
     """
-    t0 = time.time()
+    start_time = time.time()
     mesures = []
-    
-    while time.time() - t0 < duree:
-        mesures.append(imu.read_mag_raw())
-    
-    # Moyenne des mesures
-    return np.mean(mesures, axis=0)
 
-# Fonction de calibration principale
-def calibration_magnetique(beta=46, nb_mesures=4):
+    # Capturer les données pendant 'duree' secondes
+    while time.time() - start_time < duree:
+        mesures.append(imu.read_mag_raw())
+
+    # Calculer la moyenne des mesures
+    moyenne = np.mean(mesures, axis=0)
+    return np.array(moyenne)
+
+def calibrateMag(imu):
     """
-    Effectue la calibration magnétique à partir de nb_mesures dans différentes positions.
-    Retourne la matrice de calibration A et le vecteur de biais b.
+    Calibrer le magnétomètre avec moyennage des mesures sur 5 secondes pour chaque direction.
     """
-    donnees = np.zeros((nb_mesures, 3))
+    input("Positionner le capteur vers le nord, puis appuyez sur Entrée")
+    xn = moyenne_mesures(imu)
+    print(xn)
+
+    input("Positionner le capteur vers le sud, puis appuyez sur Entrée")
+    xs = moyenne_mesures(imu)
+    print(xs)
+
+    input("Positionner le capteur vers l'ouest, puis appuyez sur Entrée")
+    xw = moyenne_mesures(imu)
+    print(xw)
+
+    input("Positionner le capteur vers le haut, puis appuyez sur Entrée")
+    xu = moyenne_mesures(imu)
+    print(xu)
     
-    # Capture des données magnétiques pour nb_mesures positions différentes
-    for i in range(nb_mesures):
-        input('Positionner le bateau pour la mesure {}'.format(i))
-        donnees[i] = capturer_donnees_mag(imu)
-        print('Mesure {}: {}'.format(i, donnees[i]))
+    # Calcul du biais
+    b = -0.5 * (xn + xs)
     
-    # Transposition des données
-    donnees = donnees.T
-    print("Données capturées:\n", donnees)
-    
-    # Calcul du vecteur de biais b
-    b = (-donnees[:, 0] - donnees[:, 1]) / 2
-    print("Vecteur de biais (b):\n", b)
-    
+    # Création de la matrice X avec les mesures ajustées pour le biais
+    X = np.vstack((xn + b, xw + b, xu + b)).T
+    print("Dimensions de X:", X.shape)
+
+    # Calcul des vecteurs théoriques basés sur l'inclinaison magnétique
+    yn = np.array([[beta * np.cos(degToRad(inclination))], [0],
+                   [-beta * np.sin(degToRad(inclination))]])
+
+    yw = np.array([[0], [-beta * np.cos(degToRad(inclination))],
+                   [-beta * np.sin(degToRad(inclination))]])
+
+    yup = np.array([[-beta * np.sin(degToRad(inclination))], [0],
+                    [beta * np.cos(degToRad(inclination))]])
+
+    # Création de la matrice Y
+    Y = np.hstack((yn, yw, yup))
+    print("Dimensions de Y:", Y.shape)
+
     # Calcul de la matrice de calibration A
-    x1 = donnees[:, 0] + b
-    x2 = donnees[:, 2] + b
-    x3 = donnees[:, 3] + b
-    X = np.column_stack((x1, x2, x3))
-    A = (1 / beta) * X
-    print("Matrice de calibration (A):\n", A)
+    A = X @ np.linalg.inv(Y)
     
-    # Sauvegarde des résultats
-    np.save('A2', A)
-    np.save('b2', b)
-    
+    # Sauvegarde des matrices A et b
+    np.save('A.npy', A)
+    np.save('b.npy', b)
+
     return A, b
 
-# Exécution de la calibration
-A, b = calibration_magnetique()
+
+if __name__ == '__main__':
+    A, b = calibrateMag(imu)
+    print("Matrice de calibration (A):\n", A)
+    print("Vecteur de biais (b):\n", b)
