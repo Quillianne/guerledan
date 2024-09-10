@@ -3,6 +3,8 @@ import time
 
 point_gps = [4811.9251, "N", 300.8405, "W"]
 
+
+
 def convert_to_decimal_degrees(ddmmss, direction):
     # Séparer les degrés et les minutes avec des opérations mathématiques
     degrees = int(ddmmss // 100)  # Diviser par 100 pour obtenir les degrés

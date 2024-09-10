@@ -23,6 +23,9 @@ gps.set_filter_speed("0")
 A = np.load("A.npy")
 b = np.load("b.npy")
 
+
+GPS_DATA = []
+
 def convert_to_decimal_degrees(ddmmss, direction):
     # Séparer les degrés et les minutes avec des opérations mathématiques
     degrees = int(ddmmss // 100)  # Diviser par 100 pour obtenir les degrés
@@ -38,7 +41,6 @@ def convert_to_decimal_degrees(ddmmss, direction):
     return decimal_degrees
 
 def get_gps(gps=gps):
-
 
     gll_ok, gll_data = gps.read_gll_non_blocking()
     if gll_ok:
@@ -56,6 +58,7 @@ def suivi_gps(point_gps, log=True, Kp = 2):
     while distance > 5:
 
         coord_boat = get_gps()
+        GPS_DATA.append(coord_boat)
         if coord_boat != None:
             boat = np.array(conversion_spherique_cartesien(coord_boat))
 
@@ -93,7 +96,8 @@ def suivi_gps(point_gps, log=True, Kp = 2):
             ard.send_arduino_cmd_motor(spdleft, spdright)
 
         time.sleep(0.1)
-
+    ard.send_arduino_cmd_motor(0, 0)
+    np.save("gps_data.npy",GPS_DATA)
 
         
 
