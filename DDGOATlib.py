@@ -41,6 +41,7 @@ def get_gps(gps=gps):
     gll_ok, gll_data = gps.read_gll_non_blocking()
     if gll_ok:
         # Conversion des données GPS en degrés décimaux
+        print(gll_data)
         latitude = convert_to_decimal_degrees(gll_data[0], gll_data[1])
         longitude = convert_to_decimal_degrees(gll_data[2], gll_data[3])
         return latitude, longitude
