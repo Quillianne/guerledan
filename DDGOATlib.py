@@ -70,12 +70,13 @@ def suivi_gps(point_gps, log=True, Kp = 2):
             elif erreur < -180:
                 erreur += 360
 
-            print("cap actuel: {:.2f}° | erreur: {:.2f}° | distance: {:.2f}m".format(cap,erreur,distance))
+            print("cap actuel: {:.2f}° | cap à suivre: {:.2f}° | erreur: {:.2f}° | distance: {:.2f}m".format(cap,cap_a_suivre,erreur,distance))
             
 
             # Correction proportionnelle
             correction = Kp * erreur
-            spd_base = 50+distance
+            #spd_base = 50+distance
+            spd_base = 100
 
 
             # Calcul des vitesses des moteurs (base + correction)
