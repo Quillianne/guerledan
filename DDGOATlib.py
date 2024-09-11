@@ -2,7 +2,6 @@
 import sys
 import numpy as np
 import time
-from datetime import *
 import os
 from time import sleep
 
@@ -234,16 +233,21 @@ def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=-3.0144444, r
 
 
 def lissajou(t):  #fonction qui retourne le point a rejoindre à l'instant t (cartesien)
+    t0 = 
+    a0, a1 = conversion_spherique_cartesien([48.1996457, -3.0152944])
+    delta = (40/15)*5
 
+    x = 20*np.sin(t-t0 + delta) + a0
+    y = 40*np.sin(2*(t-t0 + delta)) + a1
 
     return x,y
 
-def lissajou_point(t):
-    """
-    fonction qui retourne la dérivé du point a rejoindre à l'instant t (cartesien)
-    """
+def lissajou_point(t):  #fonction qui retourne la dérivé du point a rejoindre à l'instant t (cartesien)
+    t0 = 
+    delta = (40/15)*5
 
-
+    x_point = 20*np.sin(t-t0 + delta)
+    y_point = 40*np.sin(2*(t-t0+delta))
 
     return x_point, y_point
 
@@ -260,7 +264,6 @@ def get_point_boat():
     return x, y
 
 def vecteur_d(position, objectif, vitesse_objectif,ordre_de_grandeur=5): #fonction avec la tan_hyperbolique,etc...
-    
 
     return x,y
 
@@ -268,15 +271,4 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
 
     #suivi cap: cap_consigne, spd_base (vitesse desirée), duree = 0.1 secondes
 
-    pass
 
-
-
-
-
-
-# Get the current time in UTC
-current_time_utc = datetime.now(timezone.utc)
-
-# Print or use the time
-print(current_time_utc)
