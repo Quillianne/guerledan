@@ -270,9 +270,17 @@ def get_point_boat():
 
     return x, y
 
-def vecteur_d(position, objectif, vitesse_objectif,ordre_de_grandeur=5): #fonction avec la tan_hyperbolique,etc...
+def vecteur_d(position:tuple, objectif:tuple, vitesse_objectif:tuple, ordre_de_grandeur=5, Kp=1): 
+    """
+    fonction avec la tan_hyperbolique,etc...
+    """
+    # erreur : vecteur entre les 2 points
+    e = np.array((objectif[0], objectif[1])) - np.array((position[0], position[1]))
+    e_norm = np.linalg(e)
+    vitesse_objectif = np.array((vitesse_objectif[0], vitesse_objectif[1]))
+    d = Kp * e/e_norm * np.tanh(e_norm/5) + vitesse_objectif
 
-    return x,y
+    return d[0], d[1]
 
 def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
 
