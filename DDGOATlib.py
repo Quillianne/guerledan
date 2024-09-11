@@ -233,6 +233,9 @@ def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=-3.0144444, r
 
 
 def lissajou(t):  #fonction qui retourne le point a rejoindre à l'instant t (cartesien)
+    """
+    Porte bien son nom
+    """
     t0 = 
     a0, a1 = conversion_spherique_cartesien([48.1996457, -3.0152944])
     delta = (40/15)*5
@@ -243,6 +246,9 @@ def lissajou(t):  #fonction qui retourne le point a rejoindre à l'instant t (ca
     return x,y
 
 def lissajou_point(t):  #fonction qui retourne la dérivé du point a rejoindre à l'instant t (cartesien)
+    """
+    fonction qui retourne la dérivée de lissajou
+    """
     t0 = 
     delta = (40/15)*5
 
