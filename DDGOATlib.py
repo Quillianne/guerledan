@@ -200,8 +200,9 @@ def suivi_cap(cap_consigne, duree=60, Kp=2, spd_base=200):
         # Pause de 0.1 seconde avant la prochaine lecture
         sleep(0.1)
 
-    ard.send_arduino_cmd_motor(0, 0)
-    print("Moteurs arrêtés.")
+    if duree > 10:
+        ard.send_arduino_cmd_motor(0, 0)
+        print("Moteurs arrêtés.")
 
 def deg_to_rad(deg):
     """Convertit les degrés en radians."""
@@ -276,27 +277,33 @@ def vecteur_d(position:np.array, objectif:np.array, vitesse_objectif:np.array, o
     # erreur : vecteur entre les 2 points
     e = objectif - position
     e_norm = np.linalg.norm(e)
-    d = Kp * e/e_norm * np.tanh(e_norm/5) + vitesse_objectif
+    d = Kp * e/e_norm * np.tanh(e_norm/ordre_de_grandeur) + vitesse_objectif
 
     return d
 
 def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
     t_start = time.time()
-
+    data_lissajou = []
     while True:
 
         coord_boat = get_point_boat()
+        data_lissajou.append(coord_boat)
         obj = np.array(fonction(datetime.now().timestamp()))
         vitesse_obj = np.array(fonction_derive(datetime.now().timestamp()))
         if coord_boat != None:
 
             vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
             cap = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-            vitesse = np.linalg.norm(vecteur)
+            vitesse = 50*np.linalg.norm(vecteur)
             suivi_cap(cap, duree = 0.2, spd_base = vitesse)
 
-        if (time.time() - t_start) > 180:
+        if (time.time() - t_start) > 200:
             break
 
         time.sleep(0.1)
+
+    ard.send_arduino_cmd_motor(0, 0)
+    np.save("data_lissajou.npy",data_lissajou)
+    print("Moteurs arrêtés.")
+    
 
