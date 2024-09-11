@@ -103,12 +103,6 @@ def suivi_gps(point_gps, log=True, Kp = 2):
 
         
 
-
-
-
-
-
-
 def get_acc_mean(imu=imu, duree=0.5):
     """
     Fonction pour capturer les données magnétiques pendant une durée (en secondes) 
