@@ -285,7 +285,6 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
     while True:
 
         coord_boat = get_point_boat()
-        GPS_DATA.append(coord_boat)
         obj = np.array(lissajou(datetime.now().timestamp()))
         vitesse_obj = np.array(lissajou_point(datetime.now().timestamp()))
         if coord_boat != None:
