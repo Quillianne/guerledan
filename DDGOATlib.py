@@ -246,9 +246,11 @@ def lissajou_point(t):  #fonction qui retourne la dérivé du point a rejoindre 
 
 def get_point(): #fonction qui retourne les coordonnees cartesiennes
 
+    return x,y
 
 def vecteur_d(position, objectif, vitesse_objectif,ordre_de_grandeur=5): #fonction avec la tan_hyperbolique,etc...
 
+    return x,y
 
 def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
 
