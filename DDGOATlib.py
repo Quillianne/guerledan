@@ -237,14 +237,26 @@ def lissajou(t):  #fonction qui retourne le point a rejoindre à l'instant t (ca
 
     return x,y
 
-def lissajou_point(t):  #fonction qui retourne la dérivé du point a rejoindre à l'instant t (cartesien)
+def lissajou_point(t):
+    """
+    fonction qui retourne la dérivé du point a rejoindre à l'instant t (cartesien)
+    """
+
 
 
     return x_point, y_point
 
 
 
-def get_point(): #fonction qui retourne les coordonnees cartesiennes
+def get_point_boat():
+    """
+    fonction qui retourne les coordonnees cartesiennes du bateau
+    """
+    # coordonnées gps (degrés)
+    point_gps = get_gps()
+    x, y = conversion_spherique_cartesien(point_gps, point de réf qu on a pas encore)
+
+    return x, y
 
 
 def vecteur_d(position, objectif, vitesse_objectif,ordre_de_grandeur=5): #fonction avec la tan_hyperbolique,etc...
