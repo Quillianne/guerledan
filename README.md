@@ -7,7 +7,7 @@ exemple : fonctions de conversion, de récupération de données, de contrôle p
     - calibration (mag) : réussie
     - suivi de cap NO-SE avec la boussole : réussi
     - suivi de GPS : réussi
-    - suivi de trajectoire (lissajou) : WIP...
+    - suivi de trajectoire (lissajou) : réussi
 
 # Utilisation
 Dans votre programme, importer DDDGOATlib.py.

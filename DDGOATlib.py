@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+## -*- coding: utf-8 -*-
 import sys
 import numpy as np
 import time
@@ -460,18 +460,18 @@ def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=
 
             # Correction proportionnelle pour le cap
             correction_cap = Kp_cap * erreur_cap
-
+            print("corr cap: ",correction_cap)
             # Calcul de la vitesse désirée en fonction de la distance (tanh pour un ajustement progressif)
             vitesse = np.tanh(distance / distance_seuil) * vitesse_max
 
     
 
             # Régulation proportionnelle de la vitesse
-            correction_vitesse = Kp_vitesse * vitesse
-
+            
+            print("corr vit: ", vitesse)
             # Calcul des vitesses des moteurs (base + correction cap)
-            spdleft = correction_vitesse + correction_cap
-            spdright = correction_vitesse - correction_cap
+            spdleft = vitesse + correction_cap
+            spdright = vitesse - correction_cap
 
             # Limiter les vitesses des moteurs entre -255 et 255
             spdleft = max(-255, min(255, spdleft))
@@ -485,8 +485,9 @@ def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=
             data_lissajou.append(((x_bateau,y_bateau),(x_cible,y_cible),cap_actuel,cap_a_suivre,vitesse,distance))
             # Pause avant la prochaine itération
             time.sleep(0.1)
+            np.save("data_lissajou.npy",data_lissajou)
 
     # Arrêt des moteurs après la durée spécifiée
     ard.send_arduino_cmd_motor(0, 0)
-    np.save("data_lissajou.npy",data_lissajou)
+    
     print("Moteurs arrêtés.")
