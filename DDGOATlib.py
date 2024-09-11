@@ -292,7 +292,7 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
         vitesse_obj = np.array(fonction_derive(datetime.now().timestamp()))
         if coord_boat != None:
 
-            vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
+            vecteur = -vecteur_d(coord_boat, obj, vitesse_obj)
             cap = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
             print(cap)
             vitesse = min(15*np.linalg.norm(vecteur),255)
