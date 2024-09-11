@@ -2,9 +2,8 @@
 import sys
 import numpy as np
 import time
-from datetime import *
+from datetime import datetime
 import os
-from time import sleep
 
 # Ajout du chemin vers le répertoire contenant les drivers
 sys.path.append(os.path.join(os.path.dirname(__file__), 'drivers-ddboat-v2'))
