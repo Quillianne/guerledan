@@ -2,6 +2,7 @@
 import sys
 import numpy as np
 import time
+from datetime import *
 import os
 from time import sleep
 
@@ -260,10 +261,22 @@ def get_point_boat():
 
 
 def vecteur_d(position, objectif, vitesse_objectif,ordre_de_grandeur=5): #fonction avec la tan_hyperbolique,etc...
+    pass
 
 
 def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
 
     #suivi cap: cap_consigne, spd_base (vitesse desirée), duree = 0.1 secondes
 
+    pass
 
+
+
+
+
+
+# Get the current time in UTC
+current_time_utc = datetime.now(timezone.utc)
+
+# Print or use the time
+print(current_time_utc)
