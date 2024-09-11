@@ -275,7 +275,7 @@ def vecteur_d(position:np.array, objectif:np.array, vitesse_objectif:np.array, o
     """
     # erreur : vecteur entre les 2 points
     e = objectif - position
-    e_norm = np.linalg(e)
+    e_norm = np.linalg.norm(e)
     d = Kp * e/e_norm * np.tanh(e_norm/5) + vitesse_objectif
 
     return d
