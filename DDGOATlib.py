@@ -281,18 +281,22 @@ def vecteur_d(position:np.array, objectif:np.array, vitesse_objectif:np.array, o
     return d
 
 def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
+    t_start = time.time()
 
     while True:
 
         coord_boat = get_point_boat()
-        obj = np.array(lissajou(datetime.now().timestamp()))
-        vitesse_obj = np.array(lissajou_point(datetime.now().timestamp()))
+        obj = np.array(fonction(datetime.now().timestamp()))
+        vitesse_obj = np.array(fonction_derive(datetime.now().timestamp()))
         if coord_boat != None:
 
             vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
             cap = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
             vitesse = np.linalg.norm(vecteur)
             suivi_cap(cap, duree = 0.2, spd_base = vitesse)
+
+        if (time.time() - t_start) > 180:
+            break
 
         time.sleep(0.1)
 
