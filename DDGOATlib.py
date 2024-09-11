@@ -202,7 +202,7 @@ def deg_to_rad(deg):
     """Convertit les degrés en radians."""
     return deg * np.pi / 180
 
-def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=-3.0144444, rho=6371000):
+def conversion_spherique_cartesien(point, lat_m=48.1996872, long_m=-3.0153766, rho=6371000):
     """
     Convertit les coordonnées GPS (latitude, longitude) en coordonnées cartésiennes locales
     par rapport à un point M défini par lat_m et long_m, en ne retournant que x et y.
@@ -233,6 +233,8 @@ def lissajou(t, t0 = 1726048800):  #fonction qui retourne le point a rejoindre �
     Porte bien son nom, prends en argument un float
     """
     a0, a1 = conversion_spherique_cartesien([48.1996457, -3.0152944])
+
+
     delta = (40/15)*5
 
     x = 10.4*np.sin(2*np.pi*(t-t0 + delta)/40) + a0
@@ -260,7 +262,7 @@ def get_point_boat():
     # coordonnées gps (degrés)
     point_gps = get_gps()
     if point_gps != None:
-        x, y = conversion_spherique_cartesien(point_gps, lat_m=48.1996872, long_m=-3.0153766)
+        x, y = conversion_spherique_cartesien(point_gps)
 
         return x, y
 
