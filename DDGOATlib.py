@@ -433,10 +433,11 @@ def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=
         vx_cible, vy_cible = fonction_derive(t)
 
         # Obtenir la position actuelle du bateau en coordonnées cartésiennes
-        try:
+        if get_point_boat():
             x_bateau, y_bateau = get_point_boat()
-        except:
+        else:
             continue
+
 
         # Calculer le vecteur vers le point cible
         vecteur_cible = np.array([x_cible - x_bateau, y_cible - y_bateau])
