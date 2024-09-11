@@ -114,15 +114,15 @@ def suivi_gps(point_gps, log=True, Kp=2, vitesse_max=200, distance_seuil=5):
     ard.send_arduino_cmd_motor(0, 0)
     print("Arrêt des moteurs.")
 
-# def get_gps(gps=gps):
+def get_gps(gps=gps):
 
-#     gll_ok, gll_data = gps.read_gll_non_blocking()
-#     if gll_ok:
+    gll_ok, gll_data = gps.read_gll_non_blocking()
+    if gll_ok:
 
-#         print(gll_data)
-#         latitude = convert_to_decimal_degrees(gll_data[0], gll_data[1])
-#         longitude = convert_to_decimal_degrees(gll_data[2], gll_data[3])
-#         return latitude, longitude
+        print(gll_data)
+        latitude = convert_to_decimal_degrees(gll_data[0], gll_data[1])
+        longitude = convert_to_decimal_degrees(gll_data[2], gll_data[3])
+        return latitude, longitude
 
 # def suivi_gps(point_gps, log=True, Kp = 2):
 #     obj = np.array(conversion_spherique_cartesien(point_gps))
