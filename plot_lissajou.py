@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Charger les données sauvegardées
-data_lissajou = np.load("data_lissajou.npy", allow_pickle=True)
+data_lissajou = np.load("data_lissajou_goated.npy", allow_pickle=True)
 
 # Extraire les coordonnées du bateau et de la cible
 x_bateau_list = [entry[0][0] for entry in data_lissajou]  # x du bateau

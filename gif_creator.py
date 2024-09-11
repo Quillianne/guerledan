@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # Charger les données sauvegardées
-data_lissajou = np.load("data_lissajou.npy", allow_pickle=True)
+data_lissajou = np.load("data_lissajou_goated.npy", allow_pickle=True)
 
 # Extraire les coordonnées du bateau et de la cible
-x_bateau_list = [entry[0][0] for entry in data_lissajou]  # x du bateau
-y_bateau_list = [entry[0][1] for entry in data_lissajou]  # y du bateau
-x_cible_list = [entry[1][0] for entry in data_lissajou]   # x de la cible
-y_cible_list = [entry[1][1] for entry in data_lissajou]   # y de la cible
+y_bateau_list = [entry[0][0] for entry in data_lissajou]  # x du bateau
+x_bateau_list = [entry[0][1] for entry in data_lissajou]  # y du bateau
+y_cible_list = [entry[1][0] for entry in data_lissajou]   # x de la cible
+x_cible_list = [entry[1][1] for entry in data_lissajou]   # y de la cible
 
 # Initialiser le graphique
 fig, ax = plt.subplots()
