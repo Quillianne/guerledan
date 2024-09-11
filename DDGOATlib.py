@@ -230,3 +230,28 @@ def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=-3.0144444, r
     y = y_p - y_m
 
     return x, y
+
+
+def lissajou(t):  #fonction qui retourne le point a rejoindre à l'instant t (cartesien)
+
+
+    return x,y
+
+def lissajou_point(t):  #fonction qui retourne la dérivé du point a rejoindre à l'instant t (cartesien)
+
+
+    return x_point, y_point
+
+
+
+def get_point(): #fonction qui retourne les coordonnees cartesiennes
+
+
+def vecteur_d(position, objectif, vitesse_objectif,ordre_de_grandeur=5): #fonction avec la tan_hyperbolique,etc...
+
+
+def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
+
+    #suivi cap: cap_consigne, spd_base (vitesse desirée), duree = 0.1 secondes
+
+
