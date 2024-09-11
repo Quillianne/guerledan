@@ -249,7 +249,6 @@ def lissajou_point(t, t0 = 1726048800):  #fonction qui retourne la dérivé du p
     """
     fonction qui retourne la dérivée de lissajou
     """
-    t0 = timedelta(hours=12)
     delta = (40/15)*5
 
     x_point = 2*np.pi*20*np.sin(2*np.pi*(t-t0 + delta)/40)/40
