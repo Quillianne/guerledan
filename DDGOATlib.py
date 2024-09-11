@@ -259,10 +259,12 @@ def get_point_boat():
 
     return x, y
 
+    return x,y
 
 def vecteur_d(position, objectif, vitesse_objectif,ordre_de_grandeur=5): #fonction avec la tan_hyperbolique,etc...
     pass
 
+    return x,y
 
 def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
 
