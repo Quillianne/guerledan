@@ -284,6 +284,7 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
     t_start = time.time()
     data_lissajou = []
     cap_actuel = 0
+    i = 0
     while True:
 
         coord_boat = get_point_boat()
@@ -323,8 +324,9 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
             ard.send_arduino_cmd_motor(spdleft, spdright)
 
             # Affichage de l'état actuel
-            print("Cap actuel: {:.2f}°, Erreur: {:.2f}°,Distance: {:.2f}m, Vitesse gauche: {:.2f}, Vitesse droite: {:.2f}".format(cap_actuel, erreur,np.linalg.norm(obj-coord_boat), spdleft, spdright))
-
+            if i % 5 == 0:
+                print("Cap actuel: {:.2f}°, Erreur: {:.2f}°,Distance: {:.2f}m, Vitesse gauche: {:.2f}, Vitesse droite: {:.2f}".format(cap_actuel, erreur,np.linalg.norm(obj-coord_boat), spdleft, spdright))
+            i += 1
             # Pause de 0.1 seconde avant la prochaine lecture
             time.sleep(0.1)
 
