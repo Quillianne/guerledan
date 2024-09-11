@@ -116,7 +116,7 @@ def lissajou(t, t0 = 1726048800):  #fonction qui retourne le point a rejoindre �
 
     #a0, a1 = conversion_spherique_cartesien([48.1996457, -3.0152944])
 
-    test = point_gps = [4811.7251, "N", 300.8405, "W"]
+    test = point_gps = [4811.9251, "N", 300.8405, "W"]
     latitude = convert_to_decimal_degrees(test[0], test[1])
     longitude = convert_to_decimal_degrees(test[2], test[3])
     a0,a1 = conversion_spherique_cartesien((latitude,longitude))
@@ -169,6 +169,7 @@ def vecteur_d(position:np.array, objectif:np.array, vitesse_objectif:np.array, o
 def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
     t_start = time.time()
     data_lissajou = []
+    cap_actuel = 0
     while True:
 
         coord_boat = get_point_boat()
@@ -179,15 +180,45 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
 
             vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
             cap = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-            print(cap)
             vitesse = min(25*np.linalg.norm(vecteur),255)
-            #print(vitesse)
+
+
+            # Conversion du cap en degrés
+            cap_actuel = (cap_actuel + cap)/2
+            # Calcul de l'erreur de cap
+            erreur = cap - cap_actuel
+
+            # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
+            if erreur > 180:
+                erreur -= 360
+            elif erreur < -180:
+                erreur += 360
+
+            # Correction proportionnelle
+            correction = erreur
+
+            # Calcul des vitesses des moteurs (base + correction)
+            spdleft = vitesse + correction
+            spdright = vitesse - correction
+
+            # Limitation des vitesses entre 0 et 255
+            spdleft = max(-255, min(255, spdleft))
+            spdright = max(-255, min(255, spdright))
+
+            # Envoi des commandes aux moteurs
+            #ard.send_arduino_cmd_motor(spdleft, spdright)
+
+            # Affichage de l'état actuel
+            print("Cap actuel: {:.2f}°, Erreur: {:.2f}°,Distance: {:.2f}m, Vitesse gauche: {:.2f}, Vitesse droite: {:.2f}".format(cap_actuel, erreur,np.linalg.norm(obj-coord_boat), spdleft, spdright))
+
+            # Pause de 0.1 seconde avant la prochaine lecture
+            time.sleep(0.1)
+
 
         if (time.time() - t_start) > 300:
             break
 
         time.sleep(0.1)
-
 
 
 print(get_gps())

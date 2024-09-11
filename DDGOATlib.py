@@ -237,8 +237,8 @@ def lissajou(t, t0 = 1726048800):  #fonction qui retourne le point a rejoindre �
 
     delta = (40/15)*5
 
-    x = 10.4*np.sin(2*np.pi*(t-t0 + delta)/40) + a0
-    y = 10.4*np.sin(2*(2*np.pi*(t-t0 + delta)/40)) + a1
+    x = 10.4*np.sin(2*np.pi*(t-t0 + delta)/100) + a0
+    y = 10.4*np.sin(2*(2*np.pi*(t-t0 + delta)/100)) + a1
 
     return x,y
 
@@ -248,8 +248,8 @@ def lissajou_point(t, t0 = 1726048800):  #fonction qui retourne la dérivé du p
     """
     delta = (40/15)*5
 
-    x_point = 2*np.pi*10.4*np.cos(2*np.pi*(t-t0 + delta)/40)/40
-    y_point = 2*np.pi*2*10.4*np.cos(2*(2*np.pi*(t-t0 + delta)/40))/40
+    x_point = 2*np.pi*10.4*np.cos(2*np.pi*(t-t0 + delta)/100)/100
+    y_point = 2*np.pi*2*10.4*np.cos(2*(2*np.pi*(t-t0 + delta)/100))/100
 
     return x_point, y_point
 
@@ -272,17 +272,18 @@ def vecteur_d(position:np.array, objectif:np.array, vitesse_objectif:np.array, o
     """
     # erreur : vecteur entre les 2 points
     e = objectif - position
-    print("e: ", e)
-    print("vitesse obj: ", vitesse_objectif)
+    #print("e: ", e)
+    #print("vitesse obj: ", vitesse_objectif)
     e_norm = np.linalg.norm(e)
-    print("distance :", e_norm)
+    #print("distance :", e_norm)
     d = (Kp * e/e_norm * np.tanh(e_norm/ordre_de_grandeur) + vitesse_objectif/10)
-    print("d: ",d)
+    #print("d: ",d)
     return d
 
 def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
     t_start = time.time()
     data_lissajou = []
+    cap_actuel = 0
     while True:
 
         coord_boat = get_point_boat()
@@ -293,11 +294,42 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
 
             vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
             cap = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-            print(cap)
             vitesse = min(25*np.linalg.norm(vecteur),255)
-            suivi_cap(cap, duree = 0.2, spd_base = vitesse)
 
-        if (time.time() - t_start) > 300:
+
+            # Conversion du cap en degrés
+            cap_actuel = (cap_actuel + cap)/2
+            # Calcul de l'erreur de cap
+            erreur = cap - cap_actuel
+
+            # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
+            if erreur > 180:
+                erreur -= 360
+            elif erreur < -180:
+                erreur += 360
+
+            # Correction proportionnelle
+            correction = erreur
+
+            # Calcul des vitesses des moteurs (base + correction)
+            spdleft = vitesse + correction
+            spdright = vitesse - correction
+
+            # Limitation des vitesses entre 0 et 255
+            spdleft = max(-255, min(255, spdleft))
+            spdright = max(-255, min(255, spdright))
+
+            # Envoi des commandes aux moteurs
+            ard.send_arduino_cmd_motor(spdleft, spdright)
+
+            # Affichage de l'état actuel
+            print("Cap actuel: {:.2f}°, Erreur: {:.2f}°,Distance: {:.2f}m, Vitesse gauche: {:.2f}, Vitesse droite: {:.2f}".format(cap_actuel, erreur,np.linalg.norm(obj-coord_boat), spdleft, spdright))
+
+            # Pause de 0.1 seconde avant la prochaine lecture
+            time.sleep(0.1)
+
+
+        if (time.time() - t_start) > 240:
             break
 
         time.sleep(0.1)
