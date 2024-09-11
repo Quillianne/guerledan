@@ -85,7 +85,7 @@ def suivi_gps(point_gps, log=True, Kp=2, vitesse_max=200, distance_seuil=5):
             elif erreur < -180:
                 erreur += 360
 
-            print(f"Cap actuel: {cap:.2f}° | Cap à suivre: {cap_a_suivre:.2f}° | Erreur: {erreur:.2f}° | Distance: {distance:.2f}m")
+            print("Cap actuel: {:.2f}° | Cap à suivre: {:.2f}° | Erreur: {:.2f}° | Distance: {:.2f}m".format(cap,cap_a_suivre_erreur,distance))
 
             # Correction proportionnelle pour le cap
             correction = Kp * erreur
