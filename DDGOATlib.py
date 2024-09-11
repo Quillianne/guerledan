@@ -269,18 +269,16 @@ def get_point_boat():
 
     return x, y
 
-def vecteur_d(position:tuple, objectif:tuple, vitesse_objectif:tuple, ordre_de_grandeur=5, Kp=1): 
+def vecteur_d(position:np.array, objectif:np.array, vitesse_objectif:np.array, ordre_de_grandeur=5, Kp=1)->np.array: 
     """
     renvoie le vecteur de commande d (en tuple)
-    /!\ QUE DES TUPLES EN ARGUMENT
     """
     # erreur : vecteur entre les 2 points
-    e = np.array((objectif[0], objectif[1])) - np.array((position[0], position[1]))
+    e = objectif - position
     e_norm = np.linalg(e)
-    vitesse_objectif = np.array((vitesse_objectif[0], vitesse_objectif[1]))
     d = Kp * e/e_norm * np.tanh(e_norm/5) + vitesse_objectif
 
-    return d[0], d[1]
+    return d
 
 def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
 
