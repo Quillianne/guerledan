@@ -297,7 +297,7 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
             vitesse = 50*np.linalg.norm(vecteur)
             suivi_cap(cap, duree = 0.2, spd_base = vitesse)
 
-        if (time.time() - t_start) > 200:
+        if (time.time() - t_start) > 300:
             break
 
         time.sleep(0.1)
