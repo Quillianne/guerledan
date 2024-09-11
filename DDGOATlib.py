@@ -291,37 +291,9 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
         if coord_boat != None:
 
             vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
-            cap = get_cap()*180/np.pi
-            cap_a_suivre = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-            distance = np.linalg.norm(vecteur)
-            # Calcul de l'erreur de cap
-            erreur = cap_a_suivre - cap
-
-            # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
-            if erreur > 180:
-                erreur -= 360
-            elif erreur < -180:
-                erreur += 360
-
-            print("cap actuel: {:.2f}° | cap à suivre: {:.2f}° | erreur: {:.2f}° | distance: {:.2f}m".format(cap,cap_a_suivre,erreur,distance))
-            
-
-            # Correction proportionnelle
-            correction = Kp * erreur
-            #spd_base = 50+distance
-            spd_base = 100
-
-
-            # Calcul des vitesses des moteurs (base + correction)
-            spdleft = spd_base + correction
-            spdright = spd_base - correction
-
-            # Limitation des vitesses entre 0 et 255
-            spdleft = max(-255, min(255, spdleft))
-            spdright = max(-255, min(255, spdright))
-
-            # Envoi des commandes aux moteurs
-            ard.send_arduino_cmd_motor(spdleft, spdright)
+            cap = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+            vitesse = np.linalg.norm(vecteur)
+            suivi_cap(cap, duree = 0.2, spd_base = vitesse)
 
         time.sleep(0.1)
     
