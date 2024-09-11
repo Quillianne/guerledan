@@ -15,6 +15,9 @@ x_cible_list = [entry[1][1] for entry in data_lissajou]   # y de la cible
 fig, ax = plt.subplots()
 boat_plot, = ax.plot([], [], 'bo-', label="Bateau (Bleu)")
 target_plot, = ax.plot([], [], 'ro-', label="Cible (Rouge)")
+boat_old_plot, = ax.plot([], [], 'ko-', label="Ancienne Trajectoire Bateau (Noir)")  # Ancien bateau en noir
+target_old_plot, = ax.plot([], [], 'go-', label="Ancienne Trajectoire Cible (Gris)")  # Ancienne cible en gris
+
 ax.set_xlim(min(x_bateau_list + x_cible_list) - 1, max(x_bateau_list + x_cible_list) + 1)
 ax.set_ylim(min(y_bateau_list + y_cible_list) - 1, max(y_bateau_list + y_cible_list) + 1)
 ax.set_xlabel('Y')
@@ -27,13 +30,21 @@ ax.grid(True)
 def init():
     boat_plot.set_data([], [])
     target_plot.set_data([], [])
-    return boat_plot, target_plot
+    boat_old_plot.set_data([], [])
+    target_old_plot.set_data([], [])
+    return boat_plot, target_plot, boat_old_plot, target_old_plot
 
 # Fonction de mise à jour de l'animation (affiche point par point)
 def update(frame):
-    boat_plot.set_data(x_bateau_list[:frame], y_bateau_list[:frame])
-    target_plot.set_data(x_cible_list[:frame], y_cible_list[:frame])
-    return boat_plot, target_plot
+    # Met à jour les anciennes positions du bateau (en noir) et de la cible (en gris)
+    boat_old_plot.set_data(x_bateau_list[:frame], y_bateau_list[:frame])
+    target_old_plot.set_data(x_cible_list[:frame], y_cible_list[:frame])
+
+    # Met à jour les positions actuelles (le dernier point) du bateau (en bleu) et de la cible (en rouge)
+    boat_plot.set_data(x_bateau_list[frame:frame+1], y_bateau_list[frame:frame+1])
+    target_plot.set_data(x_cible_list[frame:frame+1], y_cible_list[frame:frame+1])
+
+    return boat_plot, target_plot, boat_old_plot, target_old_plot
 
 # Animation : mise à jour du graphique à chaque frame
 ani = FuncAnimation(fig, update, frames=len(x_bateau_list), init_func=init, interval=100, blit=True)
