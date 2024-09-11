@@ -13,10 +13,12 @@ x_cible_list = [entry[1][1] for entry in data_lissajou]   # y de la cible
 
 # Initialiser le graphique
 fig, ax = plt.subplots()
-boat_plot, = ax.plot([], [], 'bo-', label="Bateau (Bleu)")
-target_plot, = ax.plot([], [], 'ro-', label="Cible (Rouge)")
-boat_old_plot, = ax.plot([], [], 'ko-', label="Ancienne Trajectoire Bateau (Noir)")  # Ancien bateau en noir
-target_old_plot, = ax.plot([], [], 'go-', label="Ancienne Trajectoire Cible (Gris)")  # Ancienne cible en gris
+boat_plot, = ax.plot([], [], 'bo', label="Bateau (Bleu)", markersize=8)  # Point actuel en bleu (taille normale)
+target_plot, = ax.plot([], [], 'ro', label="Cible (Rouge)", markersize=8)  # Point actuel en rouge (taille normale)
+
+# Tracer les anciennes trajectoires du bateau (en noir, avec points plus petits) et de la cible (en gris, avec pointillés)
+boat_old_plot, = ax.plot([], [], 'ko', label="Ancienne Trajectoire Bateau (Noir)", markersize=4)  # Points plus petits pour le bateau
+target_old_plot, = ax.plot([], [], 'go', label="Ancienne Trajectoire Cible (Gris)", markersize=4, linestyle=':')  # Pointillés pour la cible
 
 ax.set_xlim(min(x_bateau_list + x_cible_list) - 1, max(x_bateau_list + x_cible_list) + 1)
 ax.set_ylim(min(y_bateau_list + y_cible_list) - 1, max(y_bateau_list + y_cible_list) + 1)
