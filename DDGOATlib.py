@@ -467,11 +467,11 @@ def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=
     
 
             # Régulation proportionnelle de la vitesse
-            correction_vitesse = Kp_vitesse * vitesse
-            print("corr vit: ", correction_vitesse)
+            
+            print("corr vit: ", vitesse)
             # Calcul des vitesses des moteurs (base + correction cap)
-            spdleft = correction_vitesse + correction_cap
-            spdright = correction_vitesse - correction_cap
+            spdleft = vitesse + correction_cap
+            spdright = vitesse - correction_cap
 
             # Limiter les vitesses des moteurs entre -255 et 255
             spdleft = max(-255, min(255, spdleft))
