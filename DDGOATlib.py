@@ -260,7 +260,7 @@ def get_point_boat():
     # coordonnées gps (degrés)
     point_gps = get_gps()
     if point_gps != None:
-        x, y = conversion_spherique_cartesien(point_gps, lat_m=48.1996457, long_m=-3.0152944)
+        x, y = conversion_spherique_cartesien(point_gps, lat_m=48.1996872, long_m=-3.0153766)
 
         return x, y
 
