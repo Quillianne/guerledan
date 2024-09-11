@@ -1,6 +1,6 @@
 import numpy as np
 import time
-from datetime import *
+from datetime import datetime
 
 point_gps = [4811.9251, "N", 300.8405, "W"]
 
@@ -59,7 +59,7 @@ def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=-3.0144444, r
     x = x_p - x_m
     y = y_p - y_m
 
-    return x, y
+    return -x, y
 
 
 def suivi_gps(point_gps, log=True, Kp = 2):
@@ -72,10 +72,10 @@ def suivi_gps(point_gps, log=True, Kp = 2):
         coord_boat = get_gps()
         if coord_boat != None:
             boat = np.array(conversion_spherique_cartesien(coord_boat))
-            vecteur = boat-obj
+            vecteur = obj-boat
             cap = get_cap()*180/np.pi
 
-            cap_a_suivre = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+            cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
             distance = np.linalg.norm(vecteur)
             # Calcul de l'erreur de cap
             erreur = cap_a_suivre - cap
@@ -108,20 +108,11 @@ def suivi_gps(point_gps, log=True, Kp = 2):
 
         time.sleep(0.1)
 
-def check_timezone():
-    # Get the current time in UTC
-    current_time_utc = datetime.now(timezone.utc)
 
-    # Print or use the time
-    print(current_time_utc)
-
-
-check_timezone()
 
 print(get_gps())
-print(conversion_spherique_cartesien((48.1991667, 3.0144444)))
 print(conversion_spherique_cartesien(get_gps()))
 
-print(conversion_spherique_cartesien((48.2006265, -3.0166131)))
+print(conversion_spherique_cartesien((48.1996457, -3.0152944)))
 
-suivi_gps((48.1982104, -3.0127742))
+suivi_gps((48.1996457, -3.0152944))
