@@ -65,6 +65,7 @@ def suivi_gps(point_gps, log=True, Kp = 2):
             vecteur = boat-obj
             cap = get_cap()*180/np.pi
             cap_a_suivre = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+            
             distance = np.linalg.norm(vecteur)
             # Calcul de l'erreur de cap
             erreur = cap_a_suivre - cap
@@ -292,7 +293,8 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
         if coord_boat != None:
 
             vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
-            cap = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+            cap = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+            print(cap)
             vitesse = min(15*np.linalg.norm(vecteur),255)
             suivi_cap(cap, duree = 0.2, spd_base = vitesse)
 
