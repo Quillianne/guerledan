@@ -277,7 +277,7 @@ def vecteur_d(position:np.array, objectif:np.array, vitesse_objectif:np.array, o
     e = objectif - position
     e_norm = np.linalg.norm(e)
     d = Kp * e/e_norm * np.tanh(e_norm/ordre_de_grandeur) + vitesse_objectif
-    print(d)
+    print(vitesse_objectif)
     return d
 
 def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
