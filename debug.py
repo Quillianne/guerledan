@@ -36,7 +36,7 @@ def deg_to_rad(deg):
     """Convertit les degrés en radians."""
     return deg * np.pi / 180
 
-def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=-3.0144444, rho=6371000):
+def conversion_spherique_cartesien(point, lat_m=48.1996872, long_m=-3.0153766, rho=6371000):
     """
     Convertit les coordonnées GPS (latitude, longitude) en coordonnées cartésiennes locales
     par rapport à un point M défini par lat_m et long_m, en ne retournant que x et y.
@@ -109,10 +109,92 @@ def suivi_gps(point_gps, log=True, Kp = 2):
         time.sleep(0.1)
 
 
+def lissajou(t, t0 = 1726048800):  #fonction qui retourne le point a rejoindre à l'instant t (cartesien)
+    """
+    Porte bien son nom, prends en argument un float
+    """
+
+    #a0, a1 = conversion_spherique_cartesien([48.1996457, -3.0152944])
+
+    test = point_gps
+    latitude = convert_to_decimal_degrees(test[0], test[1])
+    longitude = convert_to_decimal_degrees(test[2], test[3])
+    a0,a1 = conversion_spherique_cartesien((latitude,longitude))
+
+    delta = (40/15)*5
+
+    x = 10.4*np.sin(2*np.pi*(t-t0 + delta)/40) + a0
+    y = 10.4*np.sin(2*(2*np.pi*(t-t0 + delta)/40)) + a1
+
+    return x,y
+
+def lissajou_point(t, t0 = 1726048800):  #fonction qui retourne la dérivé du point a rejoindre à l'instant t (cartesien)
+    """
+    fonction qui retourne la dérivée de lissajou
+    """
+    delta = (40/15)*5
+
+    x_point = 2*np.pi*10.4*np.cos(2*np.pi*(t-t0 + delta)/40)/40
+    y_point = 2*np.pi*2*10.4*np.cos(2*(2*np.pi*(t-t0 + delta)/40))/40
+
+    return x_point, y_point
+
+def get_point_boat():
+    """
+    fonction qui retourne les coordonnees cartesiennes du bateau
+    """
+    # coordonnées gps (degrés)
+    point_gps = get_gps()
+    if point_gps != None:
+        x, y = conversion_spherique_cartesien(point_gps)
+
+        return x, y
+
+def vecteur_d(position:np.array, objectif:np.array, vitesse_objectif:np.array, ordre_de_grandeur=5, Kp=10)->np.array: 
+    """
+    fonction avec la tan_hyperbolique,etc...
+    """
+    # erreur : vecteur entre les 2 points
+    e = objectif - position
+    #print("e: ", e)
+    #print("vitesse obj: ", vitesse_objectif)
+    e_norm = np.linalg.norm(e)
+    #print("distance :", e_norm)
+    d = (Kp * e/e_norm * np.tanh(e_norm/ordre_de_grandeur) + vitesse_objectif/10)
+    #print("d: ",d)
+    return d
+
+
+
+def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
+    t_start = time.time()
+    data_lissajou = []
+    while True:
+
+        coord_boat = get_point_boat()
+        data_lissajou.append(coord_boat)
+        obj = np.array(fonction(datetime.now().timestamp()))
+        vitesse_obj = np.array(fonction_derive(datetime.now().timestamp()))
+        if coord_boat != None:
+
+            vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
+            cap = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+            #print(cap)
+            vitesse = min(25*np.linalg.norm(vecteur),255)
+            print(vitesse)
+
+        if (time.time() - t_start) > 300:
+            break
+
+        time.sleep(0.1)
+
+
 
 print(get_gps())
 print(conversion_spherique_cartesien(get_gps()))
 
 print(conversion_spherique_cartesien((48.1996457, -3.0152944)))
 
-suivi_gps((48.1996457, -3.0152944))
+#suivi_gps((48.1996457, -3.0152944))
+
+print(suivi_trajectoire(lissajou,lissajou_point))
