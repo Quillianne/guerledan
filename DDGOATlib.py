@@ -255,11 +255,9 @@ def get_point_boat():
     """
     # coordonnées gps (degrés)
     point_gps = get_gps()
-    x, y = conversion_spherique_cartesien(point_gps, !!!point de réf qu on a pas encore!!!)
+    x, y = conversion_spherique_cartesien(point_gps, lat_m=48.1996457, long_m=-3.0152944)
 
     return x, y
-
-    return x,y
 
 def vecteur_d(position, objectif, vitesse_objectif,ordre_de_grandeur=5): #fonction avec la tan_hyperbolique,etc...
     
