@@ -241,8 +241,8 @@ def lissajou(t, t0 = 1726048800):  #fonction qui retourne le point a rejoindre �
     a0, a1 = conversion_spherique_cartesien([48.1996457, -3.0152944])
     delta = (40/15)*5
 
-    x = 20*np.sin(2*np.pi*(t-t0 + delta)/40) + a0
-    y = 20*np.sin(2*(2*np.pi*(t-t0 + delta)/40)) + a1
+    x = 10.4*np.sin(2*np.pi*(t-t0 + delta)/40) + a0
+    y = 10.4*np.sin(2*(2*np.pi*(t-t0 + delta)/40)) + a1
 
     return x,y
 
@@ -252,8 +252,8 @@ def lissajou_point(t, t0 = 1726048800):  #fonction qui retourne la dérivé du p
     """
     delta = (40/15)*5
 
-    x_point = 2*np.pi*20*np.sin(2*np.pi*(t-t0 + delta)/40)/40
-    y_point = 2*np.pi*40*np.sin(2*(2*np.pi*(t-t0 + delta)/40))/40
+    x_point = 2*np.pi*10.4*np.sin(2*np.pi*(t-t0 + delta)/40)/40
+    y_point = 2*np.pi*2*10.4*np.sin(2*(2*np.pi*(t-t0 + delta)/40))/40
 
     return x_point, y_point
 
@@ -295,7 +295,7 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
             vecteur = -vecteur_d(coord_boat, obj, vitesse_obj)
             cap = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
             print(cap)
-            vitesse = min(15*np.linalg.norm(vecteur),255)
+            vitesse = min(25*np.linalg.norm(vecteur),255)
             suivi_cap(cap, duree = 0.2, spd_base = vitesse)
 
         if (time.time() - t_start) > 300:
