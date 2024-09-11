@@ -296,8 +296,4 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
             suivi_cap(cap, duree = 0.2, spd_base = vitesse)
 
         time.sleep(0.1)
-    
-    np.save("gps_data.npy",GPS_DATA)
-    ard.send_arduino_cmd_motor(0, 0)
-    #suivi cap: cap_consigne, spd_base (vitesse desirée), duree = 0.1 secondes
 
