@@ -271,8 +271,7 @@ def get_point_boat():
 
 def vecteur_d(position:tuple, objectif:tuple, vitesse_objectif:tuple, ordre_de_grandeur=5, Kp=1): 
     """
-    renvoie le vecteur de commande d (en tuple)
-    /!\ QUE DES TUPLES EN ARGUMENT
+    fonction avec la tan_hyperbolique,etc...
     """
     # erreur : vecteur entre les 2 points
     e = np.array((objectif[0], objectif[1])) - np.array((position[0], position[1]))
@@ -284,6 +283,51 @@ def vecteur_d(position:tuple, objectif:tuple, vitesse_objectif:tuple, ordre_de_g
 
 def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
 
+    while True:
+
+        coord_boat = get_point_boat()
+        GPS_DATA.append(coord_boat)
+        obj = np.array(lissajou(datetime.now().timestamp()))
+        vitesse_obj = np.array(lissajou_point(datetime.now().timestamp()))
+        if coord_boat != None:
+
+            vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
+            cap = get_cap()*180/np.pi
+            cap_a_suivre = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+            distance = np.linalg.norm(vecteur)
+            # Calcul de l'erreur de cap
+            erreur = cap_a_suivre - cap
+
+            # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
+            if erreur > 180:
+                erreur -= 360
+            elif erreur < -180:
+                erreur += 360
+
+            print("cap actuel: {:.2f}° | cap à suivre: {:.2f}° | erreur: {:.2f}° | distance: {:.2f}m".format(cap,cap_a_suivre,erreur,distance))
+            
+
+            # Correction proportionnelle
+            correction = Kp * erreur
+            #spd_base = 50+distance
+            spd_base = 100
+
+
+            # Calcul des vitesses des moteurs (base + correction)
+            spdleft = spd_base + correction
+            spdright = spd_base - correction
+
+            # Limitation des vitesses entre 0 et 255
+            spdleft = max(-255, min(255, spdleft))
+            spdright = max(-255, min(255, spdright))
+
+            # Envoi des commandes aux moteurs
+            ard.send_arduino_cmd_motor(spdleft, spdright)
+
+        time.sleep(0.1)
+    
+    np.save("gps_data.npy",GPS_DATA)
+    ard.send_arduino_cmd_motor(0, 0)
     #suivi cap: cap_consigne, spd_base (vitesse desirée), duree = 0.1 secondes
 
 
