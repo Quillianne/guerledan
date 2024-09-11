@@ -1,5 +1,6 @@
 import numpy as np
-import time 
+import time
+from datetime import *
 
 point_gps = [4811.9251, "N", 300.8405, "W"]
 
@@ -107,6 +108,15 @@ def suivi_gps(point_gps, log=True, Kp = 2):
 
         time.sleep(0.1)
 
+def check_timezone():
+    # Get the current time in UTC
+    current_time_utc = datetime.now(timezone.utc)
+
+    # Print or use the time
+    print(current_time_utc)
+
+
+check_timezone()
 
 print(get_gps())
 print(conversion_spherique_cartesien((48.1991667, 3.0144444)))

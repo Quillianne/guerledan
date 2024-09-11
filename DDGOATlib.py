@@ -272,7 +272,8 @@ def get_point_boat():
 
 def vecteur_d(position:tuple, objectif:tuple, vitesse_objectif:tuple, ordre_de_grandeur=5, Kp=1): 
     """
-    fonction avec la tan_hyperbolique,etc...
+    renvoie le vecteur de commande d (en tuple)
+    /!\ QUE DES TUPLES EN ARGUMENT
     """
     # erreur : vecteur entre les 2 points
     e = np.array((objectif[0], objectif[1])) - np.array((position[0], position[1]))
