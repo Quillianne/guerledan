@@ -232,7 +232,7 @@ def lissajou(t, t0 = 1726048800):  #fonction qui retourne le point a rejoindre Ã
     """
     Porte bien son nom, prends en argument un float
     """
-    a0, a1 = conversion_spherique_cartesien([48.1996457, -3.0152944])
+    a0, a1 = conversion_spherique_cartesien([48.1996872, -3.0153766])
     delta = (40/15)*5
 
     x = 10.4*np.sin(2*np.pi*(t-t0 + delta)/40) + a0
