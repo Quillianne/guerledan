@@ -62,9 +62,9 @@ def suivi_gps(point_gps, log=True, Kp = 2):
         if coord_boat != None:
             boat = np.array(conversion_spherique_cartesien(coord_boat))
 
-            vecteur = boat-obj
+            vecteur = obj-boat
             cap = get_cap()*180/np.pi
-            cap_a_suivre = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+            cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
             
             distance = np.linalg.norm(vecteur)
             # Calcul de l'erreur de cap
@@ -225,14 +225,14 @@ def conversion_spherique_cartesien(point, lat_m=48.1991667, long_m=-3.0144444, r
     x = x_p - x_m
     y = y_p - y_m
 
-    return x, y
+    return -x, y
 
 
 def lissajou(t, t0 = 1726048800):  #fonction qui retourne le point a rejoindre à l'instant t (cartesien)
     """
     Porte bien son nom, prends en argument un float
     """
-    a0, a1 = conversion_spherique_cartesien([48.1996872, -3.0153766])
+    a0, a1 = conversion_spherique_cartesien([48.1996457, -3.0152944])
     delta = (40/15)*5
 
     x = 10.4*np.sin(2*np.pi*(t-t0 + delta)/40) + a0
@@ -246,8 +246,8 @@ def lissajou_point(t, t0 = 1726048800):  #fonction qui retourne la dérivé du p
     """
     delta = (40/15)*5
 
-    x_point = 2*np.pi*10.4*np.sin(2*np.pi*(t-t0 + delta)/40)/40
-    y_point = 2*np.pi*2*10.4*np.sin(2*(2*np.pi*(t-t0 + delta)/40))/40
+    x_point = 2*np.pi*10.4*np.cos(2*np.pi*(t-t0 + delta)/40)/40
+    y_point = 2*np.pi*2*10.4*np.cos(2*(2*np.pi*(t-t0 + delta)/40))/40
 
     return x_point, y_point
 
@@ -289,8 +289,8 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
         vitesse_obj = np.array(fonction_derive(datetime.now().timestamp()))
         if coord_boat != None:
 
-            vecteur = -vecteur_d(coord_boat, obj, vitesse_obj)
-            cap = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+            vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
+            cap = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
             print(cap)
             vitesse = min(25*np.linalg.norm(vecteur),255)
             suivi_cap(cap, duree = 0.2, spd_base = vitesse)
