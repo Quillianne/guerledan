@@ -269,17 +269,16 @@ def get_point_boat():
 
     return x, y
 
-def vecteur_d(position:tuple, objectif:tuple, vitesse_objectif:tuple, ordre_de_grandeur=5, Kp=1): 
+def vecteur_d(position:np.array, objectif:np.array, vitesse_objectif:np.array, ordre_de_grandeur=5, Kp=1)->np.array: 
     """
     fonction avec la tan_hyperbolique,etc...
     """
     # erreur : vecteur entre les 2 points
-    e = np.array((objectif[0], objectif[1])) - np.array((position[0], position[1]))
+    e = objectif - position
     e_norm = np.linalg(e)
-    vitesse_objectif = np.array((vitesse_objectif[0], vitesse_objectif[1]))
     d = Kp * e/e_norm * np.tanh(e_norm/5) + vitesse_objectif
 
-    return d[0], d[1]
+    return d
 
 def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
 
@@ -330,10 +329,3 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
     ard.send_arduino_cmd_motor(0, 0)
     #suivi cap: cap_consigne, spd_base (vitesse desirée), duree = 0.1 secondes
 
-
-
-# Get the current time in UTC
-current_time_utc = datetime.now(timezone.utc)
-
-# Print or use the time
-print(current_time_utc)
