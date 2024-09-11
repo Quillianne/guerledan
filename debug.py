@@ -116,7 +116,7 @@ def lissajou(t, t0 = 1726048800):  #fonction qui retourne le point a rejoindre Ã
 
     #a0, a1 = conversion_spherique_cartesien([48.1996457, -3.0152944])
 
-    test = point_gps
+    test = point_gps = [4811.7251, "N", 300.8405, "W"]
     latitude = convert_to_decimal_degrees(test[0], test[1])
     longitude = convert_to_decimal_degrees(test[2], test[3])
     a0,a1 = conversion_spherique_cartesien((latitude,longitude))
@@ -179,9 +179,9 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
 
             vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
             cap = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-            #print(cap)
+            print(cap)
             vitesse = min(25*np.linalg.norm(vecteur),255)
-            print(vitesse)
+            #print(vitesse)
 
         if (time.time() - t_start) > 300:
             break
