@@ -433,58 +433,58 @@ def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=
         vx_cible, vy_cible = fonction_derive(t)
 
         # Obtenir la position actuelle du bateau en coordonnées cartésiennes
-        if get_point_boat():
-            x_bateau, y_bateau = get_point_boat()
-        else:
-            continue
+        point_boat = get_point_boat()
+        if point_boat is not None:
+            x_bateau, y_bateau = point_boat
 
 
-        # Calculer le vecteur vers le point cible
-        vecteur_cible = np.array([x_cible - x_bateau, y_cible - y_bateau])
-        distance = np.linalg.norm(vecteur_cible)  # Distance au point cible
 
-        # Calcul de l'angle de cap à suivre (en degrés)
-        cap_a_suivre = np.arctan2(vecteur_cible[1], vecteur_cible[0]) * 180 / np.pi
+            # Calculer le vecteur vers le point cible
+            vecteur_cible = np.array([x_cible - x_bateau, y_cible - y_bateau])
+            distance = np.linalg.norm(vecteur_cible)  # Distance au point cible
 
-        # Obtenir le cap actuel du bateau
-        cap_actuel = get_cap() * 180 / np.pi
+            # Calcul de l'angle de cap à suivre (en degrés)
+            cap_a_suivre = np.arctan2(vecteur_cible[1], vecteur_cible[0]) * 180 / np.pi
 
-        # Calcul de l'erreur de cap
-        erreur_cap = cap_a_suivre - cap_actuel
+            # Obtenir le cap actuel du bateau
+            cap_actuel = get_cap() * 180 / np.pi
 
-        # Ajuster l'erreur pour qu'elle soit entre -180 et 180 degrés
-        if erreur_cap > 180:
-            erreur_cap -= 360
-        elif erreur_cap < -180:
-            erreur_cap += 360
+            # Calcul de l'erreur de cap
+            erreur_cap = cap_a_suivre - cap_actuel
 
-        # Correction proportionnelle pour le cap
-        correction_cap = Kp_cap * erreur_cap
+            # Ajuster l'erreur pour qu'elle soit entre -180 et 180 degrés
+            if erreur_cap > 180:
+                erreur_cap -= 360
+            elif erreur_cap < -180:
+                erreur_cap += 360
 
-        # Calcul de la vitesse désirée en fonction de la distance (tanh pour un ajustement progressif)
-        vitesse = np.tanh(distance / distance_seuil) * vitesse_max
+            # Correction proportionnelle pour le cap
+            correction_cap = Kp_cap * erreur_cap
 
- 
+            # Calcul de la vitesse désirée en fonction de la distance (tanh pour un ajustement progressif)
+            vitesse = np.tanh(distance / distance_seuil) * vitesse_max
 
-        # Régulation proportionnelle de la vitesse
-        correction_vitesse = Kp_vitesse * vitesse
+    
 
-        # Calcul des vitesses des moteurs (base + correction cap)
-        spdleft = correction_vitesse + correction_cap
-        spdright = correction_vitesse - correction_cap
+            # Régulation proportionnelle de la vitesse
+            correction_vitesse = Kp_vitesse * vitesse
 
-        # Limiter les vitesses des moteurs entre -255 et 255
-        spdleft = max(-255, min(255, spdleft))
-        spdright = max(-255, min(255, spdright))
+            # Calcul des vitesses des moteurs (base + correction cap)
+            spdleft = correction_vitesse + correction_cap
+            spdright = correction_vitesse - correction_cap
 
-        # Envoyer les commandes aux moteurs
-        ard.send_arduino_cmd_motor(spdleft, spdright)
+            # Limiter les vitesses des moteurs entre -255 et 255
+            spdleft = max(-255, min(255, spdleft))
+            spdright = max(-255, min(255, spdright))
 
-        # Affichage de l'état actuel
-        print("Cap actuel: {:.2f}°, Cap à suivre: {:.2f}°, Erreur: {:.2f}°, Vitesse: {:.2f}, Distance: {:.2f}m".format(cap_actuel, cap_a_suivre, erreur_cap, vitesse, distance))
-        data_lissajou.append(((x_bateau,y_bateau),(x_cible,y_cible),cap_actuel,cap_a_suivre,vitesse,distance))
-        # Pause avant la prochaine itération
-        time.sleep(0.1)
+            # Envoyer les commandes aux moteurs
+            ard.send_arduino_cmd_motor(spdleft, spdright)
+
+            # Affichage de l'état actuel
+            print("Cap actuel: {:.2f}°, Cap à suivre: {:.2f}°, Erreur: {:.2f}°, Vitesse: {:.2f}, Distance: {:.2f}m".format(cap_actuel, cap_a_suivre, erreur_cap, vitesse, distance))
+            data_lissajou.append(((x_bateau,y_bateau),(x_cible,y_cible),cap_actuel,cap_a_suivre,vitesse,distance))
+            # Pause avant la prochaine itération
+            time.sleep(0.1)
 
     # Arrêt des moteurs après la durée spécifiée
     ard.send_arduino_cmd_motor(0, 0)
