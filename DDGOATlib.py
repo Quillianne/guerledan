@@ -197,7 +197,7 @@ def suivi_cap(cap_consigne, duree=60, Kp=2, spd_base=200):
         print("Cap actuel: {:.2f}°, Erreur: {:.2f}°, Vitesse gauche: {}, Vitesse droite: {}".format(cap_actuel, erreur, spdleft, spdright))
 
         # Pause de 0.1 seconde avant la prochaine lecture
-        sleep(0.1)
+        time.sleep(0.1)
 
     if duree > 10:
         ard.send_arduino_cmd_motor(0, 0)
