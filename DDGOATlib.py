@@ -304,4 +304,3 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
     np.save("data_lissajou.npy",data_lissajou)
     print("Moteurs arrêtés.")
     
-
