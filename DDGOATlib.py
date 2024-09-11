@@ -2,6 +2,7 @@
 import sys
 import numpy as np
 import time
+from datetime import *
 import os
 from time import sleep
 
@@ -272,3 +273,9 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
     #suivi cap: cap_consigne, spd_base (vitesse desirée), duree = 0.1 secondes
 
 
+
+# Get the current time in UTC
+current_time_utc = datetime.now(timezone.utc)
+
+# Print or use the time
+print(current_time_utc)
