@@ -415,7 +415,7 @@ def get_point_boat():
 #     print("Moteurs arrêtés.")
     
 
-def suivi_trajectoire(fonction, fonction_derive,duree=60, Kp_cap=2, Kp_vitesse=2, vitesse_max=200, distance_seuil=5):
+def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=2, vitesse_max=200, distance_seuil=5):
     """
     Suivi de la trajectoire définie par la fonction lissajou avec régulation en cap et en vitesse.
     La vitesse est régulée en fonction de la distance avec une tangente hyperbolique.
