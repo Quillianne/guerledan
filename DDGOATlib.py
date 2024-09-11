@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+## -*- coding: utf-8 -*-
 import sys
 import numpy as np
 import time
@@ -485,8 +485,9 @@ def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=
             data_lissajou.append(((x_bateau,y_bateau),(x_cible,y_cible),cap_actuel,cap_a_suivre,vitesse,distance))
             # Pause avant la prochaine itération
             time.sleep(0.1)
+            np.save("data_lissajou.npy",data_lissajou)
 
     # Arrêt des moteurs après la durée spécifiée
     ard.send_arduino_cmd_motor(0, 0)
-    np.save("data_lissajou.npy",data_lissajou)
+    
     print("Moteurs arrêtés.")
