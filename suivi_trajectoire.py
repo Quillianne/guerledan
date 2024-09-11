@@ -1,7 +1,7 @@
 from DDGOATlib import suivi_gps, declenchement, suivi_trajectoire, lissajou, lissajou_point
 import time
 
-declenchement()
+#declenchement()
 
 suivi_trajectoire(lissajou, lissajou_point)
 time.sleep(10)
