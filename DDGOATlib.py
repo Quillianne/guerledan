@@ -293,7 +293,7 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
 
             vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
             cap = -np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-            vitesse = 50*np.linalg.norm(vecteur)
+            vitesse = min(15*np.linalg.norm(vecteur),255)
             suivi_cap(cap, duree = 0.2, spd_base = vitesse)
 
         if (time.time() - t_start) > 300:
