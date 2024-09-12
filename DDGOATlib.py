@@ -578,9 +578,10 @@ def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=10, Kp_cap=2
     dist = 1000
     # coordonnées de la bouée cible en cartésien
     point_2_cart = conversion_spherique_cartesien(point_2)
+    t_start = time.time()
 
     # boucle qui tourne jusqu'à 10m de la cible
-    while dist > dist_arret:
+    while dist > dist_arret or time.time() < t_start + 120:
         
         # position du bateau
         position_boat = get_point_boat()
