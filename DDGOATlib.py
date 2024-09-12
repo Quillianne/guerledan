@@ -530,7 +530,8 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
     p_car = np.array(p[0], p[1])
 
     # Vecteur directeur de la ligne (m, A)
-    vect_mA = A_car - m_car
+    vect_mA = (A_car - m_car)
+    vect_mA = (A_car - m_car)/np.linalg.norm(vect_mA)
 
     # Cap de la ligne (angle entre la ligne et l'axe x)
     chemin = np.arctan2(vect_mA[1], vect_mA[0])
