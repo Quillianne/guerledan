@@ -557,11 +557,6 @@ def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vi
     # boucle qui tourne pendant 'duree'
     while time.time() < start_time + duree:
         
-        # cap du bateau
-        cap_boat = get_cap() * 180/np.pi
-
- 
-        
         position_boat = get_point_boat()
         if position_boat is not None:
             # cap à suivre

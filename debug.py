@@ -221,11 +221,17 @@ def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajecto
         time.sleep(0.1)
 
 
-print(get_gps())
-print(conversion_spherique_cartesien(get_gps()))
+    
 
-print(conversion_spherique_cartesien((48.1996457, -3.0152944)))
+
+#print(get_gps())
+#print(conversion_spherique_cartesien(get_gps()))
+
+#print(conversion_spherique_cartesien((48.1996457, -3.0152944)))
 
 #suivi_gps((48.1996457, -3.0152944))
 
-print(suivi_trajectoire(lissajou,lissajou_point))
+#print(suivi_trajectoire(lissajou,lissajou_point))
+
+
+print(cap_chemin())
