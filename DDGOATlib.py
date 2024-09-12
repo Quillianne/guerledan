@@ -581,7 +581,7 @@ def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=10, Kp_cap=2
     t_start = time.time()
 
     # boucle qui tourne jusqu'à 10m de la cible
-    while dist > dist_arret or time.time() < t_start + 120:
+    while dist > dist_arret and time.time() < t_start + 120:
         
         # position du bateau
         position_boat = get_point_boat()
@@ -594,6 +594,7 @@ def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=10, Kp_cap=2
         
             # distance
             dist = np.sqrt( (position_boat[0]-point_2_cart[0])**2 + (position_boat[1]-point_2_cart[1])**2 )
+            print("--->>> distance à la bouée : ", dist)
         
     # Arrêt des moteurs après la durée spécifiée
     ard.send_arduino_cmd_motor(0, 0)
