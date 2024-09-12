@@ -569,7 +569,7 @@ def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vi
     print("Moteurs arrêtés.")
 
 
-def suivi_chemin_bouee(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vitesse=120):
+def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=10, Kp_cap=2, vitesse=120):
     """
     Suivi du chemin en ligne droite tracé entre les points 1 et 2 avec régulation en cap et en vitesse, jusqu'au point souhaité (point_2).
     point_1 et point_2 doivent être en GPS (lat, long en degré décimal)
@@ -580,7 +580,7 @@ def suivi_chemin_bouee(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vi
     point_2_cart = conversion_spherique_cartesien(point_2)
 
     # boucle qui tourne jusqu'à 10m de la cible
-    while dist > 10:
+    while dist > dist_arret:
         
         # position du bateau
         position_boat = get_point_boat()
