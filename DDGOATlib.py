@@ -561,6 +561,7 @@ def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vi
         if position_boat is not None:
             # cap à suivre
             cap_objectif = cap_chemin(position_boat, point_1, point_2) * 180/np.pi
+            print("LA FONCTION CAP_CHEMIN DE NOE RENVOIE : ", cap_objectif)
 
             suivi_cap(cap_objectif, 0.1, spd_base=vitesse)
 
