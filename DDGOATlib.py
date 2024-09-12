@@ -584,6 +584,7 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
 def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vitesse=120):
     """
     Suivi du chemin en ligne droite tracé entre les points 1 et 2 avec régulation en cap et en vitesse.
+    point_1 et point_2 doivent être en GPS
     """
     start_time = time.time()
     # boucle qui tourne pendant 'duree'
