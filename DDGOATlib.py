@@ -516,7 +516,6 @@ def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vi
         # cap du bateau
         cap_boat = get_cap() * 180/np.pi
         
-        
         position_boat = get_point_boat()
         if position_boat is not None:
             # cap à suivre
@@ -546,3 +545,9 @@ def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vi
 
             # Pause avant la prochaine itération
             time.sleep(0.1)
+
+
+    # Arrêt des moteurs après la durée spécifiée
+    ard.send_arduino_cmd_motor(0, 0)
+    
+    print("Moteurs arrêtés.")
