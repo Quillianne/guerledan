@@ -502,7 +502,7 @@ def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=
 
 
 # coordonnées GPS des points importants :
-point_M = (48.1991845, -3.0147400)
+point_M = (48.1996872, -3.0153766)
 point_A = (48.1996457, -3.0152944)
 point_B = (48.2008333, -3.0163889)
 point_C = (48.2019444, -3.0147222)
