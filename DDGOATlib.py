@@ -532,10 +532,11 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
     vect_mA = vect_mA/np.linalg.norm(vect_mA)
 
     # Cap de la ligne (angle entre la ligne et l'axe x)
-    chemin = np.arctan2(vect_mA[1], vect_mA[0]) + np.pi
+    chemin = np.arctan2(vect_mA[1], vect_mA[0])
     print('le chemin est', (chemin*180/np.pi))
     # Calcul de la distance perpendiculaire du point p à la droite définie par (m, A)
-    distance = vect_mA[0]*(p_car[1]-A_car[1]) - vect_mA[1]*(p_car[0]-A_car[0])
+    #distance = vect_mA[0]*(p_car[1]-A_car[1]) - vect_mA[1]*(p_car[0]-A_car[0])
+    distance = np.cross(vect_mA, p_car - m_car)
     print('la distance est ', distance)
     # Ajustement du cap en fonction de la distance perpendiculaire
     correction = np.tanh(distance / 5)  # Atténuation avec tanh
@@ -559,6 +560,12 @@ def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vi
         if position_boat is not None:
             # cap à suivre
             cap_objectif = cap_chemin(position_boat, point_1, point_2) * 180/np.pi
+
+            if cap_objectif > 180:
+                cap_objectif -= 360
+            elif cap_objectif < -180:
+                cap_objectif += 360
+                
             print("LA FONCTION CAP_CHEMIN DE NOE RENVOIE : ", cap_objectif)
 
             suivi_cap(cap_objectif, 0.1, spd_base=vitesse)
@@ -588,6 +595,11 @@ def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=7, Kp_cap=2,
         if position_boat is not None:
             # cap à suivre
             cap_objectif = cap_chemin(position_boat, point_1, point_2) * 180/np.pi
+            if cap_objectif > 180:
+                cap_objectif -= 360
+            elif cap_objectif < -180:
+                cap_objectif += 360
+
             print("LA FONCTION CAP_CHEMIN DE NOE RENVOIE : ", cap_objectif)
 
             suivi_cap(cap_objectif, 0.1, spd_base=vitesse)
