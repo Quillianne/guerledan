@@ -491,3 +491,58 @@ def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=
     ard.send_arduino_cmd_motor(0, 0)
     
     print("Moteurs arrêtés.")
+
+
+
+
+
+
+# coordonnées GPS des points importants :
+point_M = ()
+point_A = ()
+point_B = ()
+point_C = ()
+
+
+
+def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vitesse=120):
+    """
+    Suivi du chemin en ligne droite tracé entre les points 1 et 2 avec régulation en cap et en vitesse.
+    """
+    start_time = time.time()
+    # boucle qui tourne pendant 'duree'
+    while time.time() < start_time + duree:
+        
+        # cap du bateau
+        cap_boat = get_cap() * 180/np.pi
+        
+        
+        position_boat = get_point_boat()
+        if position_boat is not None:
+            # cap à suivre
+            cap_objectif = cap_chemin(position_boat:tuple, point_1:tuple, point_2:tuple) * 180/np.pi*
+
+            # erreur de cap entre les 2
+            erreur = cap_objectif - cap_boat
+            # Ajuster l'erreur pour qu'elle soit entre -180 et 180 degrés
+            if erreur_cap > 180:
+                erreur_cap -= 360
+            elif erreur_cap < -180:
+                erreur_cap += 360
+            
+            # correction pour contrôler les moteurs
+            correction_cap = Kp_cap * erreur
+
+            # commande moteurs
+            spdleft = vitesse + correction_cap
+            spdright = vitesse - correction_cap
+
+            # Limiter les vitesses des moteurs entre -255 et 255
+            spdleft = max(-255, min(255, spdleft))
+            spdright = max(-255, min(255, spdright))
+
+            # Envoyer les commandes aux moteurs
+            ard.send_arduino_cmd_motor(spdleft, spdright)
+
+            # Pause avant la prochaine itération
+            time.sleep(0.1)
