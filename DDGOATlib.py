@@ -534,14 +534,14 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
     vect_mA = vect_mA/np.linalg.norm(vect_mA)
 
     # Cap de la ligne (angle entre la ligne et l'axe x)
-    chemin = np.arctan2(vect_mA[1], vect_mA[0])
-
+    chemin = np.arctan2(vect_mA[1], vect_mA[0]) + np.pi
+    print('le chemin est', (chemin*180/np.pi))
     # Calcul de la distance perpendiculaire du point p à la droite définie par (m, A)
     distance = np.cross(vect_mA, p_car - m_car) / np.linalg.norm(vect_mA)
-
+    print('la distance est ', distance)
     # Ajustement du cap en fonction de la distance perpendiculaire
     correction = np.tanh(distance / 5)  # Atténuation avec tanh
-
+    print('la correction est', (correction*180/np.pi))
     # Cap corrigé
     cap_corrige = chemin + correction
 
