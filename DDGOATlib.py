@@ -493,49 +493,6 @@ def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=
     print("Moteurs arrêtés.")
 
 
-
-
-
-
-
-
-
-def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
-    """
-    Fonction qui retourne le cap en radians pour suivre une ligne définie par (m, A).
-    Le cap s'ajuste en fonction de la distance perpendiculaire du point 'p' à cette ligne.
-    
-    Args:
-        p (list): Point GPS (latitude, longitude) du bateau.
-        m (list): Point GPS (latitude, longitude) de la ligne de départ.
-        A (list): Point GPS (latitude, longitude) de la ligne d'arrivée.
-
-    Returns:
-        float: Cap à suivre en radians.
-    """
-    # Conversion des points en coordonnées cartésiennes
-    m_car = np.array(conversion_spherique_cartesien(m))
-    A_car = np.array(conversion_spherique_cartesien(A))
-    p_car = np.array(conversion_spherique_cartesien(p))
-
-    # Vecteur directeur de la ligne (m, A)
-    vect_mA = A_car - m_car
-
-    # Cap de la ligne (angle entre la ligne et l'axe x)
-    chemin = np.arctan2(vect_mA[1], vect_mA[0])
-
-    # Calcul de la distance perpendiculaire du point p à la droite définie par (m, A)
-    distance = np.cross(vect_mA, p_car - m_car) / np.linalg.norm(vect_mA)
-
-    # Ajustement du cap en fonction de la distance perpendiculaire
-    correction = np.tanh(distance / 5)  # Atténuation avec tanh
-
-    # Cap corrigé
-    cap_corrige = chemin + correction
-
-    return cap_corrige
-
-
 # coordonnées GPS des points importants :
 point_M = (48.1996872, -3.0153766)
 point_A = (48.1996457, -3.0152944)
@@ -550,7 +507,7 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
     Le cap s'ajuste en fonction de la distance perpendiculaire du point 'p' à cette ligne.
 
     Args:
-        p (list): Point GPS (latitude, longitude) du bateau.
+        p (list): Point cartesien x,y du bateau.
         m (list): Point GPS (latitude, longitude) de la ligne de départ.
         A (list): Point GPS (latitude, longitude) de la ligne d'arrivée.
 
