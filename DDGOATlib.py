@@ -591,8 +591,8 @@ def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=10, Kp_cap=2
 
             suivi_cap(cap_objectif, 0.1, spd_base=vitesse)
         
-        # distance
-        dist = np.sqrt( (position_boat[0]-point_2_cart[0])**2 + (position_boat[1]-point_2_cart[1])**2 )
+            # distance
+            dist = np.sqrt( (position_boat[0]-point_2_cart[0])**2 + (position_boat[1]-point_2_cart[1])**2 )
         
     # Arrêt des moteurs après la durée spécifiée
     ard.send_arduino_cmd_motor(0, 0)
