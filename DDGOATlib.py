@@ -548,8 +548,8 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
 
 def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vitesse=120):
     """
-    Suivi du chemin en ligne droite tracé entre les points 1 et 2 avec régulation en cap et en vitesse.
-    point_1 et point_2 doivent être en GPS
+    Suivi du chemin en ligne droite tracé entre les points 1 et 2 avec régulation en cap et en vitesse, pendant 2 minutes.
+    point_1 et point_2 doivent être en GPS (lat, long en degré décimal)
     """
     start_time = time.time()
     # boucle qui tourne pendant 'duree'
@@ -563,35 +563,37 @@ def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vi
 
             suivi_cap(cap_objectif, 0.1, spd_base=vitesse)
 
+    # Arrêt des moteurs après la durée spécifiée
+    ard.send_arduino_cmd_motor(0, 0)
+    
+    print("Moteurs arrêtés.")
 
 
+def suivi_chemin_bouee(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vitesse=120):
+    """
+    Suivi du chemin en ligne droite tracé entre les points 1 et 2 avec régulation en cap et en vitesse, jusqu'au point souhaité (point_2).
+    point_1 et point_2 doivent être en GPS (lat, long en degré décimal)
+    """
+    # distance entre le bateau et la bouée (point_2)
+    dist = 1000
+    # coordonnées de la bouée cible en cartésien
+    point_2_cart = conversion_spherique_cartesien(point_2)
 
-            # # erreur de cap entre les 2
-            # erreur = cap_objectif - cap_boat
-            # # Ajuster l'erreur pour qu'elle soit entre -180 et 180 degrés
-            # if erreur_cap > 180:
-            #     erreur_cap -= 360
-            # elif erreur_cap < -180:
-            #     erreur_cap += 360
-            
-            # # correction pour contrôler les moteurs
-            # correction_cap = Kp_cap * erreur
+    # boucle qui tourne jusqu'à 10m de la cible
+    while dist > 10:
+        
+        # position du bateau
+        position_boat = get_point_boat()
+        if position_boat is not None:
+            # cap à suivre
+            cap_objectif = cap_chemin(position_boat, point_1, point_2) * 180/np.pi
+            print("LA FONCTION CAP_CHEMIN DE NOE RENVOIE : ", cap_objectif)
 
-            # # commande moteurs
-            # spdleft = vitesse + correction_cap
-            # spdright = vitesse - correction_cap
-
-            # # Limiter les vitesses des moteurs entre -255 et 255
-            # spdleft = max(-255, min(255, spdleft))
-            # spdright = max(-255, min(255, spdright))
-
-            # # Envoyer les commandes aux moteurs
-            # ard.send_arduino_cmd_motor(spdleft, spdright)
-
-            # # Pause avant la prochaine itération
-            # time.sleep(0.1)
-
-
+            suivi_cap(cap_objectif, 0.1, spd_base=vitesse)
+        
+        # distance
+        dist = np.sqrt( (position_boat[0]-point_2_cart[0])**2 + (position_boat[1]-point_2_cart[1])**2 )
+        
     # Arrêt des moteurs après la durée spécifiée
     ard.send_arduino_cmd_motor(0, 0)
     
