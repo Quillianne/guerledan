@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+## -*- coding: utf-8 -*-
 import sys
 import numpy as np
 import time
@@ -40,6 +40,80 @@ def convert_to_decimal_degrees(ddmmss, direction):
 
     return decimal_degrees
 
+def suivi_gps(point_gps, log=True, Kp=2, vitesse_max=200, distance_seuil=5):
+    """
+    Fonction pour suivre un point GPS cible avec régulation en cap et en vitesse.
+    La vitesse est ajustée en fonction de la distance avec la tangente hyperbolique (tanh).
+    """
+
+    # Conversion du point GPS cible en coordonnées cartésiennes
+    obj = np.array(conversion_spherique_cartesien(point_gps))
+    distance = 100  # Valeur initiale de distance pour entrer dans la boucle
+
+    # Liste pour enregistrer les données GPS
+    GPS_DATA = []
+
+    while distance > distance_seuil:
+        # Obtenir les coordonnées actuelles du bateau en GPS
+        coord_boat = get_gps()
+
+        # Ajouter la position GPS du bateau à la liste
+        if coord_boat:
+            GPS_DATA.append(coord_boat)
+
+            # Conversion des coordonnées du bateau en cartésiennes
+            boat = np.array(conversion_spherique_cartesien(coord_boat))
+
+            # Calculer le vecteur vers le point cible
+            vecteur = obj - boat
+
+            # Calcul de la distance au point cible
+            distance = np.linalg.norm(vecteur)
+
+            # Obtenir le cap actuel du bateau
+            cap = get_cap() * 180 / np.pi
+
+            # Calcul du cap à suivre (angle vers le point cible)
+            cap_a_suivre = np.arctan2(vecteur[1], vecteur[0]) * 180 / np.pi
+
+            # Calcul de l'erreur de cap
+            erreur = cap_a_suivre - cap
+
+            # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
+            if erreur > 180:
+                erreur -= 360
+            elif erreur < -180:
+                erreur += 360
+
+            print("Cap actuel: {:.2f}° | Cap à suivre: {:.2f}° | Erreur: {:.2f}° | Distance: {:.2f}m".format(cap,cap_a_suivre,erreur,distance))
+
+            # Correction proportionnelle pour le cap
+            correction = Kp * erreur
+
+            # Ajuster la vitesse en fonction de la distance avec la tangente hyperbolique
+            vitesse = np.tanh(distance / distance_seuil) * vitesse_max
+
+            # Calcul des vitesses des moteurs (base + correction cap)
+            spdleft = vitesse + correction
+            spdright = vitesse - correction
+
+            # Limiter les vitesses entre -255 et 255
+            spdleft = max(-255, min(255, spdleft))
+            spdright = max(-255, min(255, spdright))
+
+            # Envoyer les commandes aux moteurs
+            ard.send_arduino_cmd_motor(spdleft, spdright)
+
+        # Pause avant la prochaine itération
+        time.sleep(0.1)
+
+    # Sauvegarder les données GPS à la fin du suivi
+    np.save("gps_data.npy", GPS_DATA)
+
+    # Arrêter les moteurs
+    ard.send_arduino_cmd_motor(0, 0)
+    print("Arrêt des moteurs.")
+
 def get_gps(gps=gps):
 
     gll_ok, gll_data = gps.read_gll_non_blocking()
@@ -50,56 +124,56 @@ def get_gps(gps=gps):
         longitude = convert_to_decimal_degrees(gll_data[2], gll_data[3])
         return latitude, longitude
 
-def suivi_gps(point_gps, log=True, Kp = 2):
-    obj = np.array(conversion_spherique_cartesien(point_gps))
-    distance = 100
+# def suivi_gps(point_gps, log=True, Kp = 2):
+#     obj = np.array(conversion_spherique_cartesien(point_gps))
+#     distance = 100
 
 
-    while distance > 5:
+#     while distance > 5:
 
-        coord_boat = get_gps()
-        GPS_DATA.append(coord_boat)
-        if coord_boat != None:
-            boat = np.array(conversion_spherique_cartesien(coord_boat))
+#         coord_boat = get_gps()
+#         GPS_DATA.append(coord_boat)
+#         if coord_boat != None:
+#             boat = np.array(conversion_spherique_cartesien(coord_boat))
 
-            vecteur = obj-boat
-            cap = get_cap()*180/np.pi
-            cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+#             vecteur = obj-boat
+#             cap = get_cap()*180/np.pi
+#             cap_a_suivre = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
             
-            distance = np.linalg.norm(vecteur)
-            # Calcul de l'erreur de cap
-            erreur = cap_a_suivre - cap
+#             distance = np.linalg.norm(vecteur)
+#             # Calcul de l'erreur de cap
+#             erreur = cap_a_suivre - cap
 
-            # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
-            if erreur > 180:
-                erreur -= 360
-            elif erreur < -180:
-                erreur += 360
+#             # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
+#             if erreur > 180:
+#                 erreur -= 360
+#             elif erreur < -180:
+#                 erreur += 360
 
-            print("cap actuel: {:.2f}° | cap à suivre: {:.2f}° | erreur: {:.2f}° | distance: {:.2f}m".format(cap,cap_a_suivre,erreur,distance))
+#             print("cap actuel: {:.2f}° | cap à suivre: {:.2f}° | erreur: {:.2f}° | distance: {:.2f}m".format(cap,cap_a_suivre,erreur,distance))
             
 
-            # Correction proportionnelle
-            correction = Kp * erreur
-            #spd_base = 50+distance
-            spd_base = 100
+#             # Correction proportionnelle
+#             correction = Kp * erreur
+#             #spd_base = 50+distance
+#             spd_base = 100
 
 
-            # Calcul des vitesses des moteurs (base + correction)
-            spdleft = spd_base + correction
-            spdright = spd_base - correction
+#             # Calcul des vitesses des moteurs (base + correction)
+#             spdleft = spd_base + correction
+#             spdright = spd_base - correction
 
-            # Limitation des vitesses entre 0 et 255
-            spdleft = max(-255, min(255, spdleft))
-            spdright = max(-255, min(255, spdright))
+#             # Limitation des vitesses entre 0 et 255
+#             spdleft = max(-255, min(255, spdleft))
+#             spdright = max(-255, min(255, spdright))
 
-            # Envoi des commandes aux moteurs
-            ard.send_arduino_cmd_motor(spdleft, spdright)
+#             # Envoi des commandes aux moteurs
+#             ard.send_arduino_cmd_motor(spdleft, spdright)
 
-        time.sleep(0.1)
+#         time.sleep(0.1)
     
-    np.save("gps_data.npy",GPS_DATA)
-    ard.send_arduino_cmd_motor(0, 0)
+#     np.save("gps_data.npy",GPS_DATA)
+#     ard.send_arduino_cmd_motor(0, 0)
 
         
 
@@ -266,114 +340,154 @@ def get_point_boat():
 
         return x, y
 
-def vecteur_d(position:np.array, objectif:np.array, vitesse_objectif:np.array, ordre_de_grandeur=5, Kp=10)->np.array: 
-    """
-    fonction avec la tan_hyperbolique,etc...
-    """
-    # erreur : vecteur entre les 2 points
-    e = objectif - position
-    #print("e: ", e)
-    #print("vitesse obj: ", vitesse_objectif)
-    e_norm = np.linalg.norm(e)
-    #print("distance :", e_norm)
-    d = (Kp * e/e_norm * np.tanh(e_norm/ordre_de_grandeur) + vitesse_objectif/10)
-    #print("d: ",d)
-    return d
+# def vecteur_d(position:np.array, objectif:np.array, vitesse_objectif:np.array, ordre_de_grandeur=5, Kp=10)->np.array: 
+#     """
+#     fonction avec la tan_hyperbolique,etc...
+#     """
+#     # erreur : vecteur entre les 2 points
+#     e = objectif - position
+#     #print("e: ", e)
+#     #print("vitesse obj: ", vitesse_objectif)
+#     e_norm = np.linalg.norm(e)
+#     #print("distance :", e_norm)
+#     d = (Kp * e/e_norm * np.tanh(e_norm/ordre_de_grandeur) + vitesse_objectif/10)
+#     #print("d: ",d)
+#     return d
 
-def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
-    t_start = time.time()
+# def suivi_trajectoire(fonction, fonction_derive): #fonction qui suit la trajectoire
+#     t_start = time.time()
+#     data_lissajou = []
+#     cap_actuel = 0
+#     i = 0
+#     while True:
+
+#         coord_boat = get_point_boat()
+#         data_lissajou.append(coord_boat)
+#         obj = np.array(fonction(datetime.now().timestamp()))
+#         vitesse_obj = np.array(fonction_derive(datetime.now().timestamp()))
+#         if coord_boat != None:
+
+#             vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
+#             cap = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
+#             vitesse = min(25*np.linalg.norm(vecteur),255)
+
+
+#             # Conversion du cap en degrés
+#             cap_actuel = (cap_actuel + cap)/2
+#             # Calcul de l'erreur de cap
+#             erreur = cap - cap_actuel
+
+#             # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
+#             if erreur > 180:
+#                 erreur -= 360
+#             elif erreur < -180:
+#                 erreur += 360
+
+#             # Correction proportionnelle
+#             correction = erreur
+
+#             # Calcul des vitesses des moteurs (base + correction)
+#             spdleft = vitesse + correction
+#             spdright = vitesse - correction
+
+#             # Limitation des vitesses entre 0 et 255
+#             spdleft = max(-255, min(255, spdleft))
+#             spdright = max(-255, min(255, spdright))
+
+#             # Envoi des commandes aux moteurs
+#             ard.send_arduino_cmd_motor(spdleft, spdright)
+
+#             # Affichage de l'état actuel
+#             if i % 5 == 0:
+#                 print("Cap actuel: {:.2f}°, Erreur: {:.2f}°,Distance: {:.2f}m, Vitesse gauche: {:.2f}, Vitesse droite: {:.2f}".format(cap_actuel, erreur,np.linalg.norm(obj-coord_boat), spdleft, spdright))
+#             i += 1
+#             # Pause de 0.1 seconde avant la prochaine lecture
+#             time.sleep(0.1)
+
+
+#         if (time.time() - t_start) > 240:
+#             break
+
+#         time.sleep(0.1)
+
+#     ard.send_arduino_cmd_motor(0, 0)
+#     np.save("data_lissajou.npy",data_lissajou)
+#     print("Moteurs arrêtés.")
+    
+
+def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=2, vitesse_max=200, distance_seuil=5):
+    """
+    Suivi de la trajectoire définie par la fonction lissajou avec régulation en cap et en vitesse.
+    La vitesse est régulée en fonction de la distance avec une tangente hyperbolique.
+    """
+    start_time = time.time()
+
     data_lissajou = []
-    cap_actuel = 0
-    i = 0
-    while True:
 
-        coord_boat = get_point_boat()
-        data_lissajou.append(coord_boat)
-        obj = np.array(fonction(datetime.now().timestamp()))
-        vitesse_obj = np.array(fonction_derive(datetime.now().timestamp()))
-        if coord_boat != None:
+    while time.time() - start_time < duree:
+        # Récupérer le point cible actuel de la trajectoire de Lissajou
+        t = datetime.now().timestamp()
+        x_cible, y_cible = fonction(t)
+        
+        # Récupérer la vitesse cible (dérivée de Lissajou)
+        vx_cible, vy_cible = fonction_derive(t)
 
-            vecteur = vecteur_d(coord_boat, obj, vitesse_obj)
-            cap = np.arctan2(vecteur[1],vecteur[0])*180/np.pi
-            vitesse = min(25*np.linalg.norm(vecteur),255)
+        # Obtenir la position actuelle du bateau en coordonnées cartésiennes
+        point_boat = get_point_boat()
+        if point_boat is not None:
+            x_bateau, y_bateau = point_boat
 
 
-            # Conversion du cap en degrés
-            cap_actuel = (cap_actuel + cap)/2
+
+            # Calculer le vecteur vers le point cible
+            vecteur_cible = np.array([x_cible - x_bateau, y_cible - y_bateau])
+            distance = np.linalg.norm(vecteur_cible)  # Distance au point cible
+
+            # Calcul de l'angle de cap à suivre (en degrés)
+            cap_a_suivre = np.arctan2(vecteur_cible[1], vecteur_cible[0]) * 180 / np.pi
+
+            # Obtenir le cap actuel du bateau
+            cap_actuel = get_cap() * 180 / np.pi
+
             # Calcul de l'erreur de cap
-            erreur = cap - cap_actuel
+            erreur_cap = cap_a_suivre - cap_actuel
 
-            # Ajustement de l'erreur pour la circularité (entre -180 et 180 degrés)
-            if erreur > 180:
-                erreur -= 360
-            elif erreur < -180:
-                erreur += 360
+            # Ajuster l'erreur pour qu'elle soit entre -180 et 180 degrés
+            if erreur_cap > 180:
+                erreur_cap -= 360
+            elif erreur_cap < -180:
+                erreur_cap += 360
 
-            # Correction proportionnelle
-            correction = erreur
+            # Correction proportionnelle pour le cap
+            correction_cap = Kp_cap * erreur_cap
+            print("corr cap: ",correction_cap)
+            # Calcul de la vitesse désirée en fonction de la distance (tanh pour un ajustement progressif)
+            vitesse = np.tanh(distance / distance_seuil) * vitesse_max
 
-            # Calcul des vitesses des moteurs (base + correction)
-            spdleft = vitesse + correction
-            spdright = vitesse - correction
+    
 
-            # Limitation des vitesses entre 0 et 255
+            # Régulation proportionnelle de la vitesse
+            
+            print("corr vit: ", vitesse)
+            # Calcul des vitesses des moteurs (base + correction cap)
+            spdleft = vitesse + correction_cap
+            spdright = vitesse - correction_cap
+
+            # Limiter les vitesses des moteurs entre -255 et 255
             spdleft = max(-255, min(255, spdleft))
             spdright = max(-255, min(255, spdright))
 
-            # Envoi des commandes aux moteurs
+            # Envoyer les commandes aux moteurs
             ard.send_arduino_cmd_motor(spdleft, spdright)
 
             # Affichage de l'état actuel
-            if i % 5 == 0:
-                print("Cap actuel: {:.2f}°, Erreur: {:.2f}°,Distance: {:.2f}m, Vitesse gauche: {:.2f}, Vitesse droite: {:.2f}".format(cap_actuel, erreur,np.linalg.norm(obj-coord_boat), spdleft, spdright))
-            i += 1
-            # Pause de 0.1 seconde avant la prochaine lecture
+            print("Cap actuel: {:.2f}°, Cap à suivre: {:.2f}°, Erreur: {:.2f}°, Vitesse: {:.2f}, Distance: {:.2f}m".format(cap_actuel, cap_a_suivre, erreur_cap, vitesse, distance))
+            data_lissajou.append(((x_bateau,y_bateau),(x_cible,y_cible),cap_actuel,cap_a_suivre,vitesse,distance))
+            # Pause avant la prochaine itération
             time.sleep(0.1)
+            np.save("data_lissajou.npy",data_lissajou)
 
-
-        if (time.time() - t_start) > 240:
-            break
-
-        time.sleep(0.1)
-
+    # Arrêt des moteurs après la durée spécifiée
     ard.send_arduino_cmd_motor(0, 0)
-    np.save("data_lissajou.npy",data_lissajou)
+    
     print("Moteurs arrêtés.")
-    
-def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
-    """
-    Fonction qui retourne le cap en radians pour suivre une ligne définie par (m, A).
-    Le cap s'ajuste en fonction de la distance perpendiculaire du point 'p' à cette ligne.
-    
-    Args:
-        p (list): Point GPS (latitude, longitude) du bateau.
-        m (list): Point GPS (latitude, longitude) de la ligne de départ.
-        A (list): Point GPS (latitude, longitude) de la ligne d'arrivée.
-
-    Returns:
-        float: Cap à suivre en radians.
-    """
-    # Conversion des points en coordonnées cartésiennes
-    m_car = np.array(conversion_spherique_cartesien(m))
-    A_car = np.array(conversion_spherique_cartesien(A))
-    p_car = np.array(conversion_spherique_cartesien(p))
-
-    # Vecteur directeur de la ligne (m, A)
-    vect_mA = A_car - m_car
-
-    # Cap de la ligne (angle entre la ligne et l'axe x)
-    chemin = np.arctan2(vect_mA[1], vect_mA[0])
-
-    # Calcul de la distance perpendiculaire du point p à la droite définie par (m, A)
-    distance = np.cross(vect_mA, p_car - m_car) / np.linalg.norm(vect_mA)
-
-    # Ajustement du cap en fonction de la distance perpendiculaire
-    correction = np.tanh(distance / 5)  # Atténuation avec tanh
-
-    # Cap corrigé
-    cap_corrige = chemin + correction
-
-    return cap_corrige
-
-
-
