@@ -8,6 +8,7 @@ exemple : fonctions de conversion, de récupération de données, de contrôle p
     - suivi de cap NO-SE avec la boussole : réussi
     - suivi de GPS : réussi
     - suivi de trajectoire (lissajou) : réussi
+    - suivi de chemin : ouais ouais ça arrive chef
 
 # Utilisation
 Dans votre programme, importer DDDGOATlib.py.
