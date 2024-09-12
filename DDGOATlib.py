@@ -547,6 +547,28 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
     return cap_corrige
 
 
+# def cap_chemin_aurele(position, point_1=point_M, point_2=point_A):
+#     point_1 = np.array(conversion_spherique_cartesien(point_1))
+#     point_2 = np.array(conversion_spherique_cartesien(point_2))
+#     # vecteur directeur de la droite
+#     vect = point_2 - point_1
+
+#     # Calcul de l'angle formé par les 2 points avec la droite Nord-Sud
+#     angle12 = np.arctan2(vect)
+
+#     # Calcul de la distance du bateau avec la droite
+#     e = vect[0]*(position[1] - point_1[1]) - vect[1]*(position[0] - point_1[0])
+
+#     # calcul de la correction pour ramener le bateau sur la droite
+#     angle_ligne = np.tanh(e/5)
+
+#     # combinaison pour former la consigne finale
+#     cap_consigne = angle12 + angle_ligne
+
+#     return cap_consigne
+
+
+
 def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vitesse=120):
     """
     Suivi du chemin en ligne droite tracé entre les points 1 et 2 avec régulation en cap et en vitesse, pendant 2 minutes.
