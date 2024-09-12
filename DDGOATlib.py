@@ -502,7 +502,7 @@ def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=
 
 
 # coordonnées GPS des points importants :
-point_M = (48.1996872, -3.0153766)
+point_M = (48.1991845, -3.0147400)
 point_A = (48.1996457, -3.0152944)
 point_B = (48.2008333, -3.0163889)
 point_C = (48.2019444, -3.0147222)
@@ -569,7 +569,7 @@ def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vi
     print("Moteurs arrêtés.")
 
 
-def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=10, Kp_cap=2, vitesse=120):
+def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=7, Kp_cap=2, vitesse=120):
     """
     Suivi du chemin en ligne droite tracé entre les points 1 et 2 avec régulation en cap et en vitesse, jusqu'au point souhaité (point_2).
     point_1 et point_2 doivent être en GPS (lat, long en degré décimal)
@@ -578,9 +578,10 @@ def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=10, Kp_cap=2
     dist = 1000
     # coordonnées de la bouée cible en cartésien
     point_2_cart = conversion_spherique_cartesien(point_2)
+    t_start = time.time()
 
     # boucle qui tourne jusqu'à 10m de la cible
-    while dist > dist_arret:
+    while dist > dist_arret and time.time() < t_start + 120:
         
         # position du bateau
         position_boat = get_point_boat()
@@ -593,6 +594,7 @@ def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=10, Kp_cap=2
         
             # distance
             dist = np.sqrt( (position_boat[0]-point_2_cart[0])**2 + (position_boat[1]-point_2_cart[1])**2 )
+            print("--->>> distance à la bouée : ", dist)
         
     # Arrêt des moteurs après la durée spécifiée
     ard.send_arduino_cmd_motor(0, 0)
