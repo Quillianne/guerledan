@@ -523,7 +523,6 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
     Returns:
         float: Cap à suivre en radians.
     """
-48°12'02.3"N 3°01'00.1"W
     # Conversion des points en coordonnées cartésiennes
     m_car = np.array(conversion_spherique_cartesien(m))
     A_car = np.array(conversion_spherique_cartesien(A))
