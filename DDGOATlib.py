@@ -527,7 +527,7 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
     # Conversion des points en coordonnées cartésiennes
     m_car = np.array(conversion_spherique_cartesien(m))
     A_car = np.array(conversion_spherique_cartesien(A))
-    p_car = np.array(p[0], p[1])
+    p_car = np.array(p)
 
     # Vecteur directeur de la ligne (m, A)
     vect_mA = (A_car - m_car)
