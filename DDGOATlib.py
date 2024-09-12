@@ -502,7 +502,7 @@ def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=
 
 
 # coordonnées GPS des points importants :
-point_M = (48.1996872, -3.0153766)
+point_M = (48.1991845, -3.0147400)
 point_A = (48.1996457, -3.0152944)
 point_B = (48.2008333, -3.0163889)
 point_C = (48.2019444, -3.0147222)
@@ -569,7 +569,7 @@ def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vi
     print("Moteurs arrêtés.")
 
 
-def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=10, Kp_cap=2, vitesse=120):
+def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=7, Kp_cap=2, vitesse=120):
     """
     Suivi du chemin en ligne droite tracé entre les points 1 et 2 avec régulation en cap et en vitesse, jusqu'au point souhaité (point_2).
     point_1 et point_2 doivent être en GPS (lat, long en degré décimal)
