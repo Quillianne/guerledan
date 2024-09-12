@@ -503,10 +503,10 @@ def suivi_trajectoire(fonction, fonction_derive,duree=300, Kp_cap=2, Kp_vitesse=
 
 
 # coordonnées GPS des points importants :
-point_M = (48.19918, -3.014670)
+point_M = (48.1996872, -3.0153766)
 point_A = (48.1996457, -3.0152944)
-point_B = (48.2006278, -3.0167036)
-point_C = (48.201944, -3.0147222)
+point_B = (48.2008333, -3.0163889)
+point_C = (48.2019444, -3.0147222)
 
 
 def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
@@ -523,7 +523,7 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
     Returns:
         float: Cap à suivre en radians.
     """
-48°12'02.3"N 3°01'00.1"W
+
     # Conversion des points en coordonnées cartésiennes
     m_car = np.array(conversion_spherique_cartesien(m))
     A_car = np.array(conversion_spherique_cartesien(A))
@@ -534,7 +534,7 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
     vect_mA = vect_mA/np.linalg.norm(vect_mA)
 
     # Cap de la ligne (angle entre la ligne et l'axe x)
-    chemin = np.arctan2(vect_mA[1], vect_mA[0]) + np.pi
+    chemin = np.arctan2(vect_mA[1], vect_mA[0])
     print('le chemin est', (chemin*180/np.pi))
     # Calcul de la distance perpendiculaire du point p à la droite définie par (m, A)
     distance = np.cross(vect_mA, p_car - m_car) / np.linalg.norm(vect_mA)
