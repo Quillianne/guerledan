@@ -551,7 +551,7 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
     # Calcul de la distance perpendiculaire du point p à la droite définie par (m, A)
     #distance = distance_point_droite(m_car, A_car, p_car)
     #distance = vect_mA[0]*(p_car[1]-A_car[1]) - vect_mA[1]*(p_car[0]-A_car[0])
-    #distance = np.cross(vect_mA, p_car - m_car)
+    distance = np.cross(vect_mA, p_car - m_car)
     print('la distance est ', distance)
     # Ajustement du cap en fonction de la distance perpendiculaire
     correction = np.tanh(distance / 5)  # Atténuation avec tanh
