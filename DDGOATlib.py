@@ -634,3 +634,10 @@ def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=7, Kp_cap=2,
     ard.send_arduino_cmd_motor(0, 0)
     
     print("Moteurs arrêtés.")
+
+
+
+
+
+
+    
