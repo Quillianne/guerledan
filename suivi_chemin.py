@@ -5,5 +5,5 @@ import time
 declenchement()
 suivi_chemin_temps()
 time.sleep(10)
-suivi_gps((48.1992385, -3.0147241))
+suivi_gps((48.19918833333333, -3.014728333333333))
 
