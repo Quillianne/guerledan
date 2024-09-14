@@ -539,35 +539,12 @@ def cap_chemin(p, m=[48.1996872, -3.0153766], A=[48.1996457, -3.0152944]):
     distance = np.cross(vect_mA, p_car - m_car)
     print('la distance est ', distance)
     # Ajustement du cap en fonction de la distance perpendiculaire
-    correction = np.tanh(distance / 5)  # Atténuation avec tanh
+    correction = np.tanh(distance / 5)  # Atténuation avec tanh     # sinon essayer correction = np.pi/2 - np.tanh(distance / 5)
     print('la correction est', (correction*180/np.pi))
     # Cap corrigé
     cap_corrige = chemin + correction
 
     return cap_corrige
-
-
-# def cap_chemin_aurele(position, point_1=point_M, point_2=point_A):
-#     point_1 = np.array(conversion_spherique_cartesien(point_1))
-#     point_2 = np.array(conversion_spherique_cartesien(point_2))
-#     # vecteur directeur de la droite
-#     vect = point_2 - point_1
-
-#     # Calcul de l'angle formé par les 2 points avec la droite Nord-Sud
-#     angle12 = np.arctan2(vect)
-
-#     # Calcul de la distance du bateau avec la droite
-#     e = vect[0]*(position[1] - point_1[1]) - vect[1]*(position[0] - point_1[0])
-
-#     # calcul de la correction pour ramener le bateau sur la droite
-#     angle_ligne = np.tanh(e/5)
-
-#     # combinaison pour former la consigne finale
-#     cap_consigne = angle12 + angle_ligne
-
-#     return cap_consigne
-
-
 
 def suivi_chemin_temps(point_1=point_M, point_2=point_A, duree=120, Kp_cap=2, vitesse=120):
     """
@@ -640,4 +617,4 @@ def suivi_chemin_bouee(point_1=point_M, point_2=point_A, dist_arret=7, Kp_cap=2,
 
 
 
-    
+
