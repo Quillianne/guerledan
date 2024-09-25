@@ -9,7 +9,7 @@ Bibliothèque principale contenant toutes les fonctions nécessaires pour les mi
 ## calibrate_mag.py
 Script utilisé pour la calibration du magnétomètre et obtenir la matrice de calibration A et b (enregistrés sur le DDBOAT).
 
-## suivi_....py
+## suivi_...py
 Codes réalisant les différents suivis (cap, traj, chemin...)
 
 ## plot_lissajou.py / plot_lissajou_live.py / gif_creator.py
