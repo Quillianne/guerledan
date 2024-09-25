@@ -19,8 +19,8 @@ boat_plot, = ax.plot([], [], 'bo', label="Bateau (Bleu)", markersize=8, zorder=5
 target_plot, = ax.plot([], [], 'ro', label="Cible (Rouge)", markersize=8, zorder=5)  # Point actuel en avant-plan (zorder 5)
 
 # Tracer les anciennes trajectoires du bateau (en noir, avec points plus petits) et de la cible (en gris, avec pointillés)
-boat_old_plot, = ax.plot([], [], 'ko', label="Ancienne Trajectoire Bateau (Noir)", markersize=4, zorder=3)  # Points plus petits pour le bateau (arrière-plan)
-target_old_plot, = ax.plot([], [], 'go', label="Ancienne Trajectoire Cible (Gris)", markersize=4, linestyle=':', zorder=3)  # Pointillés pour la cible (arrière-plan)
+boat_old_plot, = ax.plot([], [], 'ko', label="Trajectoire Bateau (Noir)", markersize=4, zorder=3)  # Points plus petits pour le bateau (arrière-plan)
+target_old_plot, = ax.plot([], [], 'go', label="Trajectoire Cible (Gris)", markersize=4, linestyle=':', zorder=3)  # Pointillés pour la cible (arrière-plan)
 
 # Définir les limites du graphique
 ax.set_xlim(min(x_bateau_list + x_cible_list) - 1, max(x_bateau_list + x_cible_list) + 1)
